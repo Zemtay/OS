@@ -57,6 +57,13 @@ PUBLIC void task_sys()
 				  sizeof(t));
 			send_recv(SEND, src, &msg);
 			break;
+		case GET_PROC_INFO:
+			msg.type = SYSCALL_RET;
+			phys_copy(va2la(src, msg.BUF),
+				  va2la(TASK_SYS, &proc_table[msg.PID]),
+				  sizeof(struct proc));
+			send_recv(SEND, src, &msg);
+			break;
 		default:
 			panic("unknown msg type");
 			break;

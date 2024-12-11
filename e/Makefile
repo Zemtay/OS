@@ -42,9 +42,9 @@ LOBJS		=  lib/syscall.o\
 			lib/printf.o lib/vsprintf.o\
 			lib/string.o lib/misc.o\
 			lib/open.o lib/read.o lib/write.o lib/close.o lib/unlink.o lib/lseek.o\
-			lib/getpid.o lib/stat.o\
-			lib/fork.o lib/exit.o lib/wait.o lib/exec.o\
-			lib/shell.o lib/dirent.o lib/cmdparser.o lib/keywise.o
+			lib/getpid.o lib/stat.o lib/getpinfo.o\
+			lib/fork.o lib/exit.o lib/wait.o lib/exec.o lib/kill.o\
+			lib/shell.o lib/dirent.o lib/cmdparser.o lib/keywise.o 
 DASMOUTPUT	= kernel.bin.asm
 
 # All Phony Targets
@@ -196,6 +196,12 @@ lib/dirent.o: lib/dirent.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 lib/cmdparser.o: lib/cmdparser.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/getpinfo.o: lib/getpinfo.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/kill.o: lib/kill.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 mm/main.o: mm/main.c

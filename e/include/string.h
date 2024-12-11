@@ -16,6 +16,7 @@ PUBLIC  char * _strcpy(char *dest, char *src);
 PUBLIC  char * _strncpy(char *dest, const char *src, size_t n);
 PUBLIC  void proc_memcpy(void* p_dst, int pid_dst, void* p_src, int pid_src, int len);
 PUBLIC  void memmove(void* dst, void* src, int size);
+PUBLIC  int  atoi(const char *str);
 
 /**
  * `phys_copy' and `phys_set' are used only in the kernel, where segments

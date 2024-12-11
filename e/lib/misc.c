@@ -298,6 +298,40 @@ PUBLIC  void proc_memcpy(void* p_dst, int pid_dst, void* p_src, int pid_src, int
 	// send_recv(SEND, TASK_MM, &mm_msg);
 }
 
+/**
+ * @brief Converts a string to an integer.
+ * 
+ * @param str The string to be converted.
+ * @return The integer representation of the string.
+ */
+PUBLIC int atoi(const char *str) {
+    int result = 0;  // Initialize result
+    int sign = 1;    // Initialize sign as positive
+    
+    // Handle optional whitespace characters
+    while (*str == ' ' || *str == '\t' || *str == '\n' || *str == '\r' || *str == '\f' || *str == '\v') {
+        str++;
+    }
+
+    // Handle optional sign
+    if (*str == '-') {
+        sign = -1;  // If negative sign, update sign
+        str++;
+    } else if (*str == '+') {
+        str++;  // If positive sign, move to the next character
+    }
+
+    // Convert the string to an integer
+    while (*str >= '0' && *str <= '9') {
+        result = result * 10 + (*str - '0');  // Update result for each digit
+        str++;
+    }
+
+    return result * sign;  // Return result with sign
+}
+
+
+
 /*****************************************************************************
  *                           assertion_failure
  *************************************************************************//**

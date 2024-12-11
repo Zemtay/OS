@@ -134,6 +134,12 @@ PUBLIC int unlink(const char *pathname);
 /* lib/getpid.c */
 PUBLIC int getpid();
 
+/* lib/getpinfo.c */
+PUBLIC void getpinfo();
+
+/* lib/libkill.c */
+PUBLIC int kill(int pid);
+
 /* lib/fork.c */
 PUBLIC int fork();
 

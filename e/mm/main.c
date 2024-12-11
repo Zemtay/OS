@@ -65,6 +65,9 @@ PUBLIC void task_mm()
 			do_wait();
 			reply = 0;
 			break;
+		case KILL:
+			do_kill(mm_msg.PID);
+			break;
 		default:
 			dump_msg("MM::unknown msg", &mm_msg);
 			assert(0);
