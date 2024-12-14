@@ -30,7 +30,10 @@ int main(int argc, char *argv[]) {
 	if (fd == 0) {
 		printf("can not open file: %s\n", filepath);
         return 1;
-	}
+	}else{
+		printf("%d\n", fd); 
+		printf("open file: %s\n", filepath);
+	} 
 
 	ret = read(fd, buf, 8190);
 

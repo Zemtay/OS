@@ -8,11 +8,12 @@ DASM		= objdump
 CC		= gcc
 LD		= ld
 ASMFLAGS	= -I ../include/ -f elf
-CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall
+# CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall
+CFLAGS		= -I ../include/ -I ../include/sys/ -c -fno-builtin -fno-stack-protector
 LDFLAGS		= -Ttext 0x1000
 DASMFLAGS	= -D
 LIB		= ../lib/orangescrt.a
-BIN		= echo pwd ls mkdir cd touch rm vi cat ps kill
+BIN		= echo pwd ls mkdir cd touch rm vi cat ps kill inject
 
 # All Phony Targets
 .PHONY : everything final clean realclean disasm all install
@@ -136,4 +137,15 @@ kill.o: kill.c ../include/type.h ../include/stdio.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 kill : kill.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+
+# 编译 lseek.c
+../lib/lseek.o: ../lib/lseek.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+# 目标 inject 的编译和链接
+inject.o: inject.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+inject: inject.o start.o ../lib/lseek.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $?
