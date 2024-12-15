@@ -72,6 +72,9 @@ PUBLIC void dump_tty_buf();	/* for debug only */
 /* systask.c */
 PUBLIC void task_sys();
 
+/* logtask.c */
+PUBLIC void task_log();
+
 /* fs/main.c */
 PUBLIC void			task_fs();
 PUBLIC int			rw_sector(int io_type, int dev, u64 pos,

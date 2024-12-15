@@ -29,7 +29,7 @@ ORANGESKERNEL	= kernel.bin
 LIB		= lib/orangescrt.a
 
 OBJS		= kernel/kernel.o kernel/start.o kernel/main.o\
-			kernel/clock.o kernel/keyboard.o kernel/tty.o kernel/console.o\
+			kernel/clock.o kernel/keyboard.o kernel/tty.o kernel/logtask.o kernel/console.o\
 			kernel/i8259.o kernel/global.o kernel/protect.o kernel/proc.o\
 			kernel/systask.o kernel/hd.o\
 			kernel/kliba.o kernel/klib.o\
@@ -43,7 +43,7 @@ LOBJS		=  lib/syscall.o\
 			lib/string.o lib/misc.o\
 			lib/open.o lib/read.o lib/write.o lib/close.o lib/unlink.o lib/lseek.o\
 			lib/getpid.o lib/stat.o lib/getpinfo.o\
-			lib/fork.o lib/exit.o lib/wait.o lib/exec.o lib/kill.o\
+			lib/fork.o lib/exit.o lib/wait.o lib/exec.o lib/kill.o lib/logfila.o\
 			lib/shell.o lib/dirent.o lib/cmdparser.o lib/keywise.o 
 DASMOUTPUT	= kernel.bin.asm
 
@@ -108,6 +108,9 @@ kernel/keyboard.o: kernel/keyboard.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/tty.o: kernel/tty.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/logtask.o: kernel/logtask.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/console.o: kernel/console.c
@@ -202,6 +205,9 @@ lib/getpinfo.o: lib/getpinfo.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 lib/kill.o: lib/kill.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/logfila.o: lib/logfila.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 mm/main.o: mm/main.c

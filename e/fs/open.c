@@ -24,6 +24,7 @@
 #include "global.h"
 #include "keyboard.h"
 #include "proto.h"
+#include "logfila.h"
 
 PRIVATE struct inode * create_file(char * path, int flags);
 PRIVATE struct inode * create_dir(char * path, int flags);
@@ -75,7 +76,8 @@ PUBLIC int do_open()
 	if (i >= NR_FILE_DESC)
 		panic("f_desc_table[] is full (PID:%d)", proc2pid(pcaller));
 
-	DEBUG_PRINT("open", "start to search %s, fd:%d", pathname, fd);
+	LogFuncEntry("FS-open", LEVEL_TRACE, "start to search %s, fd:%d", pathname, fd);
+
 	// printl("%s\n",pathname);
 	int inode_nr = search_file(pathname);
 	// printl("end search,res %d\n", inode_nr);

@@ -15,6 +15,7 @@
         "mdirent.h": "c",
         "keyboard.h": "c",
         "string.h": "c",
-        "keywise.h": "c"
+        "keywise.h": "c",
+        "logfila.h": "c"
     }
 }

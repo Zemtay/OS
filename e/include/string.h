@@ -19,6 +19,9 @@ PUBLIC  void proc_memcpy(void* p_dst, int pid_dst, void* p_src, int pid_src, int
 PUBLIC  void memmove(void* dst, void* src, int size);
 PUBLIC  int  atoi(const char *str);
 
+PUBLIC int _sprintf(char *target, const char *format, ...);
+PUBLIC int _vsprintf(char *target, const char *format, va_list args);
+
 /**
  * `phys_copy' and `phys_set' are used only in the kernel, where segments
  * are all flat (based on 0). In the meanwhile, currently linear address

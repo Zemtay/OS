@@ -9,6 +9,7 @@
  *****************************************************************************
  *****************************************************************************/
 
+#include "mstdarg.h"
 #include "type.h"
 #include "stdio.h"
 #include "const.h"
@@ -21,10 +22,6 @@
 #include "global.h"
 #include "keyboard.h"
 #include "proto.h"
-
-#ifndef NULL
-#define NULL 0
-#endif
 
 /*****************************************************************************
  *                                send_recv
@@ -247,6 +244,107 @@ char *_strcpy(char *dest, char *src) {
     *d = '\0';
 
     return dest;  // 返回目标字符串的起始地址
+}
+
+// 将字符写入目标缓冲区
+void putchar_to_buffer(char **buffer, char c) {
+    **buffer = c;
+    (*buffer)++;
+}
+
+// 将字符串写入目标缓冲区
+void puts_to_buffer(char **buffer, const char *str) {
+    while (*str) {
+        putchar_to_buffer(buffer, *str++);
+    }
+}
+
+// 将十进制整数写入目标缓冲区
+void putint_to_buffer(char **buffer, int num) {
+    char temp[12]; // 最大支持10位数字+负号+\0
+    int i = 0;
+    int is_negative = 0;
+
+    if (num < 0) {
+        is_negative = 1;
+        num = -num; // 处理负数
+    }
+
+    do {
+        temp[i++] = (num % 10) + '0'; // 转化为字符
+        num /= 10;
+    } while (num);
+
+    if (is_negative) {
+        temp[i++] = '-';
+    }
+
+    while (i--) {
+        putchar_to_buffer(buffer, temp[i]);
+    }
+}
+
+// 将十六进制整数写入目标缓冲区
+void puthex_to_buffer(char **buffer, unsigned int num) {
+    char temp[8];
+    int i = 0;
+    const char *digits = "0123456789abcdef";
+
+    do {
+        temp[i++] = digits[num % 16];
+        num /= 16;
+    } while (num);
+
+    while (i--) {
+        putchar_to_buffer(buffer, temp[i]);
+    }
+}
+
+// vsprintf函数实现
+int _vsprintf(char *target, const char *format, va_list args) {
+    char *buffer = target;
+
+    while (*format) {
+        if (*format == '%') {
+            format++; // 跳过%
+            switch (*format) {
+                case 'd': {
+                    int d = va_arg(args, int);
+                    putint_to_buffer(&buffer, d);
+                    break;
+                }
+                case 's': {
+                    char *s = va_arg(args, char*);
+                    puts_to_buffer(&buffer, s);
+                    break;
+                }
+                case 'x': {
+                    unsigned int x = va_arg(args, unsigned int);
+                    puthex_to_buffer(&buffer, x);
+                    break;
+                }
+                default: {
+                    putchar_to_buffer(&buffer, '%');
+                    putchar_to_buffer(&buffer, *format);
+                }
+            }
+        } else {
+            putchar_to_buffer(&buffer, *format);
+        }
+        format++;
+    }
+
+    *buffer = '\0'; // 确保字符串结束
+    return buffer - target; // 返回写入的字符总数
+}
+
+// 自定义sprintf函数，封装vsprintf
+int _sprintf(char *target, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    int result = vsprintf(target, format, args);
+    va_end(args);
+    return result;
 }
 
 /**

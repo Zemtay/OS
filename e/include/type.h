@@ -23,7 +23,9 @@ typedef unsigned char u8;
 
 typedef u16 size_t;
 
+#ifndef _SCARLETBORDER_STDARG_H_
 typedef char *va_list;
+#endif
 
 typedef void (*int_handler)();
 typedef void (*task_f)();
