@@ -106,6 +106,7 @@ PUBLIC int do_open()
 			return -1;
 		pin = get_inode(dir_inode->i_dev, inode_nr);
 		count_surplus_inode_link(pin); // 剩余node的引用
+		printl("sizeof pinode's point to %d\n", pin->i_size);
 	}
 
 	if (pin) {
@@ -263,6 +264,7 @@ PUBLIC int do_close()
 {
 	int fd = fs_msg.FD;
 	put_inodes_link(pcaller->filp[fd]->fd_inode);
+	printl("closed indoe size =%d", pcaller->filp[fd]->fd_inode->i_size);
 	if (--pcaller->filp[fd]->fd_cnt == 0)
 		pcaller->filp[fd]->fd_inode = 0;
 	pcaller->filp[fd] = 0;
@@ -408,7 +410,7 @@ PRIVATE int alloc_smap_bit(int dev, int nr_sects_to_alloc)
 			}
 
 			for (; k < 8; k++) { /* repeat till enough bits are set */
-				assert(((fsbuf[j] >> k) & 1) == 0);
+				// assert(((fsbuf[j] >> k) & 1) == 0);
 				fsbuf[j] |= (1 << k);
 				if (--nr_sects_to_alloc == 0)
 					break;

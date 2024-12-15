@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 				struct stat f_stat;
 				char f_path[256] = {'\0'};
 				get_full_path(buff, f_path);
-				printf("\n%s\n", f_path);
+				printf("%s", f_path);
 				stat(f_path, &f_stat);
 				int f_size      = f_stat.st_size;
 				char mode_str[] = "...";

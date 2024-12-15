@@ -244,7 +244,7 @@ void shabby_shell(const char *tty_name) {
 	char curpath[BYTES_SHELL_WORKING_DIRECTORY];
 
 	while (1) {
-		getcwd( curpath,BYTES_SHELL_WORKING_DIRECTORY);
+		getcwd(curpath,BYTES_SHELL_WORKING_DIRECTORY);
 		write(1, curpath, strlen(curpath));
 		write(1, "$ ", 2);
 		int r    = read(0, rdbuf, 70);
@@ -269,7 +269,18 @@ void shabby_shell(const char *tty_name) {
 			}
 			p++;
 		} while (ch);
-		argv[argc] = 0;
+		
+		
+		
+		// 检查是否包含 `&`，并设置后台标志
+		int is_background = 0;
+		if (argc > 0 && strcmp(argv[argc - 1], "&") == 0) {
+			is_background = 1;
+			argv[argc - 1] = NULL; // 删除 `&`，使参数正确
+			argc--;
+		}
+
+		argv[argc] = 0; // 确保参数列表以 NULL 结束
 		DEBUG_PRINT("shell", "argc %d", argc);
 
 		if (argc == 0)
@@ -287,15 +298,19 @@ void shabby_shell(const char *tty_name) {
 			}
 		} else {
 			int ok = close(fd);
-			// printf("ok %d\n", ok);
 			int pid = fork();
 			if (pid != 0) { /* parent */
-				int s;
-				wait(&s);
+				if (!is_background) {
+					int s;
+					wait(&s); // 前台进程等待子进程完成
+				} else {
+					printf("[shell] Background process started. PID: %d\n", pid);
+				}
 			} else { /* child */
-				printf("[shell] now exec %s \n", full_path);
+				// printf("[shell] now exec %s \n", full_path);
 				argv[0] = full_path;
-				execv(full_path, argv); // 没有透传full_path
+				execv(full_path, argv); // 执行命令
+	
 			}
 		}
 	}

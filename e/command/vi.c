@@ -159,6 +159,7 @@ void edit() {
 			// 处理扩展按键
 			switch (ch) {
 			case ESC:
+				putchar('\0');
 				return;
 			case UP:
 			case DOWN:
