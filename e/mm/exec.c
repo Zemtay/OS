@@ -22,6 +22,7 @@
 #include "keyboard.h"
 #include "proto.h"
 #include "elf.h"
+#include "logfila.h"
 
 
 /*****************************************************************************
@@ -34,6 +35,7 @@
  *****************************************************************************/
 PUBLIC int do_exec()
 {
+	LogFuncEntry("do_exec", LEVEL_INFO, "Entering do_exec()");
 	/* get parameters from the message */
 	int name_len = mm_msg.NAME_LEN;	/* length of filename */
 	int src = mm_msg.source;	/* caller proc nr. */
@@ -45,12 +47,15 @@ PUBLIC int do_exec()
 		  name_len);
 	pathname[name_len] = 0;	/* terminate the string */
 
+	/* Log the received filename */
+    // LogFuncEntry("do_exec", LEVEL_DEBUG, "Received pathname: %s", pathname);
+
 	/* get the file size */
 	struct stat s;
 
 	int ret = stat(pathname, &s); // 没用到stat的信息,但是用到了ret这个返回值
 	if (ret != 0) {
-		printl("{MM} MM::do_exec()::stat() returns error. %s", pathname);
+		// LogFuncEntry("do_exec", LEVEL_ERROR, "stat() failed for file: %s, return value: %d", pathname, ret);
 		return -1;
 	}
 	
@@ -61,6 +66,7 @@ PUBLIC int do_exec()
 	assert(s.st_size < MMBUF_SIZE);
 	read(fd, mmbuf, s.st_size);
 	close(fd);
+	// LogFuncEntry("do_exec", LEVEL_DEBUG, "File %s read successfully, size: %d bytes", pathname, s.st_size);
 	
 
 	/* overwrite the current proc image with the new one */
@@ -76,6 +82,8 @@ PUBLIC int do_exec()
 				  (void*)va2la(TASK_MM,
 						 mmbuf + prog_hdr->p_offset),
 				  prog_hdr->p_filesz);
+			// LogFuncEntry("do_exec", LEVEL_DEBUG, "Loaded program header %d: p_vaddr = %d, p_memsz = %d",
+            //              i, prog_hdr->p_vaddr, prog_hdr->p_memsz);
 		}
 	}
 
@@ -100,6 +108,8 @@ PUBLIC int do_exec()
 	phys_copy((void*)va2la(src, orig_stack),
 		  (void*)va2la(TASK_MM, stackcopy),
 		  orig_stack_len);
+	
+	// LogFuncEntry("do_exec", LEVEL_DEBUG, "Arg stack setup complete, argc = %d", argc);
 
 	proc_table[src].regs.ecx = argc; /* argc */
 	proc_table[src].regs.eax = (u32)orig_stack; /* argv */
@@ -108,8 +118,13 @@ PUBLIC int do_exec()
 	proc_table[src].regs.eip = elf_hdr->e_entry; /* @see _start.asm */
 	proc_table[src].regs.esp = PROC_IMAGE_SIZE_DEFAULT - PROC_ORIGIN_STACK;
 
+	// LogFuncEntry("do_exec", LEVEL_INFO, "Process image set up for %s, eip = %d, esp = %d",
+    //              pathname, proc_table[src].regs.eip, proc_table[src].regs.esp);
+
 	strcpy(proc_table[src].name, pathname);
 	// DEBUG_PRINT("exec", "find mmbuf, pathname: %s\n", pathname);// 只要启用就会百分百报错
+
+	// LogFuncEntry("do_exec", LEVEL_INFO, "Execution of %s successful", pathname);
 
 	return 0;
 }

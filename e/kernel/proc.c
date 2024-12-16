@@ -32,25 +32,166 @@ PRIVATE int  deadlock(int src, int dest);
  *****************************************************************************/
 PUBLIC void schedule()
 {
-	struct proc*	p;
-	int		greatest_ticks = 0;
+    struct proc* p;
 
-	while (!greatest_ticks) {
-		for (p = &FIRST_PROC; p <= &LAST_PROC; p++) {
-			if (p->p_flags == 0) {
-				if (p->ticks > greatest_ticks) {
-					greatest_ticks = p->ticks;
-					p_proc_ready = p;
+    struct proc_queue* Q1 = &p_queue[0];
+    struct proc_queue* Q2 = &p_queue[1];
+    struct proc_queue* Q3 = &p_queue[2];
+
+    // Q1非空
+    if (Q1->proc_num > 0) {
+        for (int i = 0; i < Q1->proc_num; i++) {
+            p = Q1->queue[i];
+            // 只调度 p_flags == 0 的进程
+            if (p->p_flags == 0) {
+                p_proc_ready = p;
+				p->queue = 1;
+
+				if (p->start_flag == 0) {
+					p->start_flag = 1;
+					p->start_time = ticks;
 				}
-			}
-		}
 
-		if (!greatest_ticks)
-			for (p = &FIRST_PROC; p <= &LAST_PROC; p++)
-				if (p->p_flags == 0)
-					p->ticks = p->priority;
-	}
+                // 进程结束运行
+                if (p->ticks <= 0) {
+                    Q1->proc_num--;
+                    for (int j = i; j < Q1->proc_num; j++) {
+                        Q1->queue[j] = Q1->queue[j + 1];
+                    }
+                    p->ticks = p->priority;
+                    p->queue_ticks = Q3->tick;
+                    Q3->queue[Q3->proc_num++] = p;
+
+					if (!p->end_flag) {
+						p->end_flag = 1;
+						p->end_time = ticks;
+						p->end_queue = 1;
+						accomplish++;
+					}
+                }
+                // 用完 Q1 时间片，进入 Q2
+                else if (p->queue_ticks <= 0) {
+                    Q1->proc_num--;
+                    for (int j = i; j < Q1->proc_num; j++) {
+                        Q1->queue[j] = Q1->queue[j + 1];
+                    }
+                    p->queue_ticks = Q2->tick;
+                    Q2->queue[Q2->proc_num++] = p;
+					if (p->q2_flag == 0) {
+						p->q2_flag = 1;
+						p->q2_time = ticks;
+					}
+                }
+                return;
+            }
+        }
+    }
+
+    // Q1为空，Q2非空
+    if (Q2->proc_num > 0) {
+        for (int i = 0; i < Q2->proc_num; i++) {
+            p = Q2->queue[i];
+            if (p->p_flags == 0) {
+                p_proc_ready = p;
+				p->queue = 2;
+
+                // 进程结束运行
+                if (p->ticks <= 0) {
+                    Q2->proc_num--;
+                    for (int j = i; j < Q2->proc_num; j++) {
+                        Q2->queue[j] = Q2->queue[j + 1];
+                    }
+                    p->ticks = p->priority;
+                    p->queue_ticks = Q3->tick;
+                    Q3->queue[Q3->proc_num++] = p;
+
+					if (!p->end_flag) {
+						p->end_flag = 1;
+						p->end_time = ticks;
+						p->end_queue = 2;
+						accomplish++;
+					}
+                }
+                // 用完 Q2 时间片，进入 Q3
+                else if (p->queue_ticks <= 0) {
+                    Q2->proc_num--;
+                    for (int j = i; j < Q2->proc_num; j++) {
+                        Q2->queue[j] = Q2->queue[j + 1];
+                    }
+                    p->queue_ticks = Q3->tick;
+                    Q3->queue[Q3->proc_num++] = p;
+                }
+                return;
+            }
+        }
+    }
+
+    // Q1、Q2均为空，Q3非空
+    if (Q3->proc_num > 0) {
+        for (int i = 0; i < Q3->proc_num; i++) {
+            p = Q3->queue[i];
+            if (p->p_flags == 0) {
+                p_proc_ready = p;
+				p->queue = 3;
+
+                if (p->ticks <= 0) {
+                    Q3->proc_num--;
+                    for (int j = i; j < Q3->proc_num; j++) {
+                        Q3->queue[j] = Q3->queue[j + 1];
+                    }
+                    p->ticks = p->priority;
+                    p->queue_ticks = Q3->tick;
+                    Q3->queue[Q3->proc_num++] = p;
+
+					if (!p->end_flag) {
+						p->end_flag = 1;
+						p->end_time = ticks;
+						p->end_queue = 3;
+						accomplish++;
+					}
+                }
+                else if (p->queue_ticks <= 0) {
+                    Q3->proc_num--;
+                    for (int j = i; j < Q3->proc_num; j++) {
+                        Q3->queue[j] = Q3->queue[j + 1];
+                    }
+					// 根据优先级调整时间片, 优先级较高的进程可以获得更多的时间片
+                    p->queue_ticks = (p->priority > 20) ? Q3->tick * 2 : Q3->tick;
+                    Q3->queue[Q3->proc_num++] = p;
+                }
+                return;
+            }
+        }
+    }
+    // 如果所有队列都没有可调度的进程, 将TestA作为“空进程”进行调度
+	p_proc_ready = &proc_table[7];
+    disp_str(" all processes are blocked or finished! ");
 }
+
+// PUBLIC void schedule1()
+// {
+//     struct proc* p;
+// 	int		greatest_ticks = 0;
+// 	while (!greatest_ticks) {
+// 		for (p = &FIRST_PROC; p <= &LAST_PROC; p++) {
+// 			if (p->p_flags == 0) {
+// 				if (p->ticks > greatest_ticks) {
+// 					greatest_ticks = p->ticks;
+// 					p_proc_ready = p;
+// 				}
+// 			}
+// 		}
+
+// 		if (!greatest_ticks) {
+// 			for (p = &FIRST_PROC; p <= &LAST_PROC; p++)
+// 				if (p->p_flags == 0)
+// 					p->ticks = p->priority;
+// 		}
+// 	}
+// 	//disp_color_str(p_proc_ready->name, BRIGHT);
+
+// }
+
 
 /*****************************************************************************
  *                                sys_sendrec

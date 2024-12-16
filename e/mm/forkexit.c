@@ -55,6 +55,11 @@ PUBLIC int do_fork()
 	p->p_parent = pid;
 	sprintf(p->name, "%s_%d", proc_table[pid].name, child_pid);
 
+	// ----------------------------ADD----------------------------------
+	p_queue[0].queue[p_queue[0].proc_num] = p;
+	p_queue[0].proc_num++;
+	// ----------------------------ADD----------------------------------
+
 	/* duplicate the process: T, D & S */
 	struct descriptor * ppd;
 

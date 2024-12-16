@@ -87,7 +87,7 @@ PUBLIC int do_rdwt()
 
 		// count the real size of the inode link
 		while (1){
-			printl("traversenode size is %d\n", traverse_node->i_size);
+			// printl("traversenode size is %d\n", traverse_node->i_size);
 			real_size += traverse_node->i_size;
 			real_sects_num += traverse_node->i_nr_sects;
 
@@ -125,7 +125,7 @@ PUBLIC int do_rdwt()
 			traverse_node = get_inode_directly(traverse_node->i_dev, traverse_node->i_next_node);
 		}
 		u64 before_sector_num = traveled_sector;
-		printl("end sec=%d, befsec=%d\n",end_sector,before_sector_num);
+		// printl("end sec=%d, befsec=%d\n",end_sector,before_sector_num);
 		struct inode* start_inode = traverse_node;
 		while (1) {
 			if (traveled_sector + traverse_node->i_nr_sects >= end_sector) {
@@ -138,7 +138,7 @@ PUBLIC int do_rdwt()
 			}
 			traverse_node = get_inode_directly(traverse_node->i_dev, traverse_node->i_next_node);
 		}
-		printl("%d",traveled_sector);
+		// printl("%d",traveled_sector);
 		struct inode* end_inode = traverse_node;
 		traverse_node = start_inode;
 
@@ -205,17 +205,17 @@ PUBLIC int do_rdwt()
 		}
 		
 		// size is larger than original, which means the final inode need to make change
-		printl("%d",traveled_sector);
+		// printl("%d",traveled_sector);
 		if (pcaller->filp[fd]->fd_pos > real_size && fs_msg.type == WRITE) { 		
 			/* update inode::size */
 
 			// TODO: read幽默结束后fdpos=0导致enlarge
-			printl("need to enlarge file %d to pos %d\n", real_size, pcaller->filp[fd]->fd_pos);
+			// printl("need to enlarge file %d to pos %d\n", real_size, pcaller->filp[fd]->fd_pos);
 			end_inode->i_size = pcaller->filp[fd]->fd_pos - traveled_sector * SECTOR_SIZE;
-			printl("node=%d",end_inode->i_size);
+			// printl("node=%d",end_inode->i_size);
 			/* write the updated i-node back to disk */
 			sync_inode_link(pin);
-			printl("-%d\n", pin->i_size);
+			// printl("-%d\n", pin->i_size);
 
 		}
 		sync_inode_link(pin);

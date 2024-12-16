@@ -122,7 +122,7 @@ PUBLIC int low_search_entry(struct inode* dir_inode, char *entryName){
 		RD_SECT(dir_inode->i_dev, dir_blk0_nr + i);
 		pde = (struct dir_entry *)fsbuf;
 		for (j = 0; j < SECTOR_SIZE / DIR_ENTRY_SIZE; j++,pde++) {
-			LogFuncEntry("FS-lowsearch", LEVEL_TRACE, "%s", pde->name);
+			// LogFuncEntry("FS-lowsearch", LEVEL_TRACE, "%s", pde->name);
 
 			if (strcmp(entryName, pde->name) == 0) {
 				last_query_dev = dir_inode->i_dev;

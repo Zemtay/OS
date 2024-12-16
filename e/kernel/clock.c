@@ -37,6 +37,20 @@ PUBLIC void clock_handler(int irq)
 	if (p_proc_ready->ticks)
 		p_proc_ready->ticks--;
 
+	if (p_proc_ready->queue_ticks)
+		p_proc_ready->queue_ticks--;
+
+	// 测试抢占
+	if (test_flag == 0 && ticks == 52) {
+		test_flag = 1;
+		struct proc *p = &proc_table[9];
+		disp_str(p->name);
+		disp_str(" ");
+		p_queue[0].queue[p_queue[0].proc_num] = p;
+		p_queue[0].proc_num++;
+		disp_int(p_queue[0].proc_num);
+	}
+
 	if (key_pressed)
 		inform_int(TASK_TTY);
 
@@ -44,9 +58,9 @@ PUBLIC void clock_handler(int irq)
 		return;
 	}
 
-	if (p_proc_ready->ticks > 0) {
-		return;
-	}
+	// if (p_proc_ready->ticks > 0 && p_proc_ready->queue_ticks > 0) {
+	// 	return;
+	// }
 
 	schedule();
 

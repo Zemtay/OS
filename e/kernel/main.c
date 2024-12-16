@@ -19,6 +19,9 @@
 #include "proto.h"
 #include "unistd.h"
 
+#include "check.h"
+#include "logfila.h"
+
 // clang-format on
 
 /*****************************************************************************
@@ -42,6 +45,17 @@ PUBLIC int kernel_main() {
 
 	char *stk = task_stack + STACK_SIZE_TOTAL;
 
+	// -----------------------------------------ADD-----------------------------------------
+	p_queue[0].proc_num = 0;
+	p_queue[0].tick = 10;
+
+	p_queue[1].proc_num = 0;
+	p_queue[1].tick = 15;
+
+	p_queue[2].proc_num = 0;
+	p_queue[2].tick = 30;
+	// -----------------------------------------ADD-----------------------------------------
+
 	for (i = 0; i < NR_TASKS + NR_PROCS; i++, p++, t++) {
 		if (i >= NR_TASKS + NR_NATIVE_PROCS) {
 			p->p_flags = FREE_SLOT;
@@ -53,13 +67,13 @@ PUBLIC int kernel_main() {
 			priv   = PRIVILEGE_TASK;
 			rpl    = RPL_TASK;
 			eflags = 0x1202; /* IF=1, IOPL=1, bit 2 is always 1 */
-			prio   = 15;
+			prio   = 50;
 		} else { /* USER PROC */
 			t      = user_proc_table + (i - NR_TASKS);
 			priv   = PRIVILEGE_USER;
 			rpl    = RPL_USER;
 			eflags = 0x202; /* IF=1, bit 2 is always 1 */
-			prio   = 5;
+			prio   = 20;
 		}
 
 		strcpy(p->name, t->name); /* name of the process */
@@ -111,10 +125,28 @@ PUBLIC int kernel_main() {
 			p->filp[j] = 0;
 
 		stk -= t->stacksize;
+
+		// -----------------------------------------ADD-----------------------------------------
+		p->queue = 0;
+		p->queue_ticks = p_queue[0].tick;
+
+		if (i != 9) {
+			p_queue[0].queue[p_queue[0].proc_num] = p;
+			p_queue[0].proc_num++;
+		}
+
+		p->end_flag = p->start_flag = p->q2_flag = 0;
+		p->end_time = p->start_time = p->q2_time = p->end_queue = -1;
+		test_flag = 0;
+		// -----------------------------------------ADD-----------------------------------------
+
 	}
 
 	k_reenter = 0;
+	// -----------------------------------------ADD-----------------------------------------
 	ticks     = 0;
+	accomplish = 0;
+	// -----------------------------------------ADD-----------------------------------------
 
 	p_proc_ready = proc_table;
 
@@ -179,6 +211,10 @@ void untar(const char *filename) {
 	char buf[SECTOR_SIZE * 16];
 	int chunk = sizeof(buf);
 
+	// ---------------------------------ADD-----------------------------------------
+	int check_count = 0;  // 记录check_table的下标
+	// ---------------------------------ADD-----------------------------------------
+
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
 		if (buf[0] == 0)
@@ -193,7 +229,7 @@ void untar(const char *filename) {
 			f_len = (f_len * 8) + (*p++ - '0'); /* octal */
 
 		int bytes_left = f_len;
-		printf("size%d", bytes_left);
+		// printf("size%d", bytes_left);
 
 		/**
 		 * 原来,这里的phdr->name是文件的名字,而不是标准的地址,即为'kernel.bin'而非'/kernel.bin'
@@ -208,7 +244,7 @@ void untar(const char *filename) {
 			printf(" aborted]");
 			return;
 		}
-		printf("    %s (%d bytes)\n", phdr->name, f_len);
+		printf("\n%s (%d bytes)\n", phdr->name, f_len);
 		while (bytes_left) {
 			int iobytes = min(chunk, bytes_left);
 			read(fd, buf, ((iobytes - 1) / SECTOR_SIZE + 1) * SECTOR_SIZE);
@@ -216,11 +252,36 @@ void untar(const char *filename) {
 			bytes_left -= iobytes;
 		}
 		close(fdout);
+
+		// ---------------------------------ADD-----------------------------------------
+		if (strcmp(filepath, "/kernel.bin") != 0) {
+			strcpy((check_table + check_count)->filepath, filepath);
+			check_table[check_count].byteCount = f_len;
+
+			// 计算文件原始的 md5 值
+			unsigned char origin_check[16] = {0};
+			if (Check((check_table + check_count)->filepath, f_len, origin_check) == 0) {
+				memcpy(check_table[check_count].checksum, origin_check, 16);
+			}
+
+			// 打印校验值
+			printf("checksum: ");
+			for (int i = 0; i < 16; i++) {
+				printf("%02x", origin_check[i]);
+			}
+			printf("\n");
+			
+			check_count++;
+		} else {
+			printf("\n");
+		}
+		// ---------------------------------ADD-----------------------------------------
+
 	}
 
 	close(fd);
 
-	printf(" done]\n");
+	printf(" done]\n\n");
 }
 
 /*****************************************************************************
@@ -240,11 +301,14 @@ void shabby_shell(const char *tty_name) {
 	int fd_stdout = open(tty_name, O_RDWR);
 	assert(fd_stdout == 1);
 
+	// LogFuncEntry("shell", LEVEL_DEBUG, "enter shell");
+
 	char rdbuf[128];
 	char curpath[BYTES_SHELL_WORKING_DIRECTORY];
 
 	while (1) {
 		getcwd(curpath,BYTES_SHELL_WORKING_DIRECTORY);
+		// LogFuncEntry("shell", LEVEL_DEBUG, "successfully getcwd");
 		write(1, curpath, strlen(curpath));
 		write(1, "$ ", 2);
 		int r    = read(0, rdbuf, 70);
@@ -309,8 +373,47 @@ void shabby_shell(const char *tty_name) {
 			} else { /* child */
 				// printf("[shell] now exec %s \n", full_path);
 				argv[0] = full_path;
-				execv(full_path, argv); // 执行命令
-	
+
+				// ---------------------------------ADD-----------------------------------------
+				int pos = 0;
+				// 遍历寻找位置
+				for (int i = 0; i < NR_CHECKFILES; i++) {
+					int flag = strcmp((check_table + i)->filepath, argv[0]);
+					if (flag == 0) {
+						pos = i;
+						break;
+					}
+				}
+				// 得到原始校验值
+				unsigned char* origin = check_table[pos].checksum;  
+				
+				// 对当前运行的程序进行校验值计算
+				unsigned char current[16] = {0};
+
+				if (Check(argv[0], check_table[pos].byteCount, current) == 0) {
+					// 输出原始与当前校验值
+					printf("origin : ");
+					for (int i = 0; i < 16; i++) {
+						printf("%02x", origin[i]);
+					}
+					printf("\n");
+
+					printf("current : ");
+					for (int i = 0; i < 16; i++) {
+						printf("%02x", current[i]);
+					}
+					printf("\n");
+
+					if (memcmp(origin, current, 16) == 0) {
+						printf("Checksum matches.\n\n");
+						execv(argv[0], argv);
+					} else {
+						printf("this file has been changed!\n\n");
+					}
+				} else {
+					printf("Error in checksum calculation.\n\n");
+				}
+				// ---------------------------------ADD-----------------------------------------
 			}
 		}
 	}
@@ -345,6 +448,21 @@ void Init() {
 		int pid = fork();
 		if (pid != 0) { /* parent process */
 			printf("[parent is running, child pid:%d]\n", pid);
+			
+			// -----------------------------------------ADD-----------------------------------------
+			for (i = 0; i < NR_QUEUE; i++) {
+				printf("queue%d: ticks=%d, proc_num=%d\n", i+1, p_queue[i].tick, p_queue[i].proc_num);
+			}
+			delay(100);
+			printf("accomplish:%d\n", accomplish);
+			struct proc *p;
+			printf(" %-10s%-15s%-15s%-15s%-15s\n", "name", "start time", "q1->q2", "end time", "end queue");
+			for (p = &FIRST_PROC; p <= &LAST_PROC; p++) {
+					if (p->end_flag == 1)
+						printf(" %-10s%-15d%-15d%-15d%-15d\n", p->name, p->start_time, p->q2_time, p->end_time, p->end_queue);
+			// -----------------------------------------ADD-----------------------------------------
+
+			}
 		} else { /* child process */
 			printf("[child is running, pid:%d]\n", getpid());
 			close(fd_stdin);

@@ -13,6 +13,8 @@
 
 
 EXTERN	int	ticks;
+EXTERN 	int accomplish;
+EXTERN  int test_flag;
 
 EXTERN	int	disp_pos;
 
@@ -40,6 +42,8 @@ extern  struct task	user_proc_table[];
 extern	irq_handler	irq_table[];
 extern	TTY		tty_table[];
 extern  CONSOLE		console_table[];
+extern struct proc_queue p_queue[];
+// extern struct check_t check_table[];
 
 /* MM */
 EXTERN	MESSAGE			mm_msg;

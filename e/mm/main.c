@@ -24,6 +24,7 @@
 #include "proto.h"
 
 #include "shell.h"
+#include "logfila.h"
 
 PUBLIC void do_fork_test();
 
@@ -42,6 +43,11 @@ PUBLIC void task_mm()
 
 	while (1) {
 		send_recv(RECEIVE, ANY, &mm_msg);
+		// Log the received message type and source
+        // LogFuncEntry("task_mm", LEVEL_DEBUG, 
+		// 			"Received message: type = %d, source = %d", 
+		// 			mm_msg.type, mm_msg.source);
+
 		int src = mm_msg.source;
 		int reply = 1;
 
@@ -76,6 +82,9 @@ PUBLIC void task_mm()
 		if (reply) {
 			mm_msg.type = SYSCALL_RET;
 			send_recv(SEND, src, &mm_msg);
+			// LogFuncEntry("task_mm", LEVEL_DEBUG, 
+			// 			"Sent response to source %d: type = %d, retval = %d", 
+			// 			src, mm_msg.type, mm_msg.RETVAL);
 		}
 	}
 }

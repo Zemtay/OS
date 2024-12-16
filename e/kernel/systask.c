@@ -20,6 +20,8 @@
 #include "keyboard.h"
 #include "proto.h"
 
+#include "logfila.h"
+
 PRIVATE int read_register(char reg_addr);
 PRIVATE u32 get_rtc_time(struct time *t);
 
@@ -37,17 +39,27 @@ PUBLIC void task_sys()
 
 	while (1) {
 		send_recv(RECEIVE, ANY, &msg);
+		// LogFuncEntry("task_sys", LEVEL_DEBUG, 
+		// 			"Received message: type = %d, source = %d", \
+		// 			msg.type, msg.source);
+
 		int src = msg.source;
 
 		switch (msg.type) {
 		case GET_TICKS:
 			msg.RETVAL = ticks;
 			send_recv(SEND, src, &msg);
+			// LogFuncEntry("task_sys", LEVEL_DEBUG, 
+			// 			"GET_TICKS: Sent ticks = %d to source %d", 
+			// 			ticks, src);
 			break;
 		case GET_PID:
 			msg.type = SYSCALL_RET;
 			msg.PID = src;
 			send_recv(SEND, src, &msg);
+			// LogFuncEntry("task_sys", LEVEL_DEBUG, 
+			// 			"GET_PID: Sent PID = %d to source %d", 
+			// 			msg.PID, src);
 			break;
 		case GET_RTC_TIME:
 			msg.type = SYSCALL_RET;
@@ -56,6 +68,8 @@ PUBLIC void task_sys()
 				  va2la(TASK_SYS, &t),
 				  sizeof(t));
 			send_recv(SEND, src, &msg);
+			// LogFuncEntry("task_sys", LEVEL_DEBUG, 
+			// 			"GET_RTC_TIME: Sent RTC time to source %d", src);
 			break;
 		case GET_PROC_INFO:
 			msg.type = SYSCALL_RET;
@@ -63,9 +77,15 @@ PUBLIC void task_sys()
 				  va2la(TASK_SYS, &proc_table[msg.PID]),
 				  sizeof(struct proc));
 			send_recv(SEND, src, &msg);
+			// LogFuncEntry("task_sys", LEVEL_DEBUG, 
+			// 			"GET_PROC_INFO: Sent process info of PID %d to source %d", 
+			// 			msg.PID, src);
+
 			break;
 		default:
 			panic("unknown msg type");
+			// LogFuncEntry("task_sys", LEVEL_ERROR, 
+			// 			"Unknown message type received: %d", msg.type);
 			break;
 		}
 	}

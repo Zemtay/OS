@@ -71,6 +71,10 @@ void DefaultLogHandler(char *stage, enum LogLevels level, char *str) {
 		printl("{test}: %s", str);
 }
 
+// void DiskLogHandler(char *stage, enum LogLevels level, char *str) {
+
+// }
+
 /**
  * @brief 初始化日志处理器
  */

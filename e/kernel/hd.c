@@ -21,6 +21,8 @@
 #include "proto.h"
 #include "hd.h"
 
+#include "logfila.h"
+
 
 PRIVATE void	init_hd			();
 PRIVATE void	hd_open			(int device);
@@ -59,6 +61,9 @@ PUBLIC void task_hd()
 
 	while (1) {
 		send_recv(RECEIVE, ANY, &msg);
+		// LogFuncEntry("task_hd", LEVEL_DEBUG, 
+		// 			"Received message: type = %d, source = %d", 
+		// 			msg.type, msg.source);
 
 		int src = msg.source;
 
@@ -87,6 +92,11 @@ PUBLIC void task_hd()
 		}
 
 		send_recv(SEND, src, &msg);
+
+		// LogFuncEntry("task_hd", LEVEL_DEBUG, 
+		// 			"Sent response to source %d: msg.type = %d", 
+		// 			src, msg.type);
+
 	}
 }
 

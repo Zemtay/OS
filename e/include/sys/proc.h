@@ -68,6 +68,31 @@ struct proc {
 	int exit_status; /**< for parent */
 
 	struct file_desc * filp[NR_FILES];
+
+	int queue;  /* shows which queue the procss are in;for example: queue==1，in queue1 */
+	int queue_ticks;   /*runned times in present queue*/
+
+	int arrive_time;
+
+	int end_flag;
+	int end_time;
+
+	int start_time;
+	int start_flag;
+
+	int q2_time;
+	int q2_flag;
+
+	int end_queue;
+};
+
+#define NR_QUEUE 3
+#define NR_PROC_IN_QUE 20
+
+struct proc_queue {
+	struct proc* queue[NR_PROC_IN_QUE];
+	int proc_num;
+	int tick;
 };
 
 struct task {

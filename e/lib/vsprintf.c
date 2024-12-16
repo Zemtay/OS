@@ -45,21 +45,22 @@ PRIVATE char* i2a(int val, int base, char ** ps)
 PUBLIC int vsprintf(char *buf, const char *fmt, va_list args)
 {
 	char*	p;
-
 	va_list	p_next_arg = args;
 	int	m;
 
 	char	inner_buf[STR_DEFAULT_LEN];
 	char	cs;
 	int	align_nr;
+	int	is_left_align; // 新增变量，标记是否左对齐
 
-	for (p=buf;*fmt;fmt++) {
+	for (p = buf; *fmt; fmt++) {
 		if (*fmt != '%') {
 			*p++ = *fmt;
 			continue;
 		}
-		else {		/* a format string begins */
+		else { /* a format string begins */
 			align_nr = 0;
+			is_left_align = 0; // 默认右对齐
 		}
 
 		fmt++;
@@ -68,20 +69,26 @@ PUBLIC int vsprintf(char *buf, const char *fmt, va_list args)
 			*p++ = *fmt;
 			continue;
 		}
-		else if (*fmt == '0') {
+		else if (*fmt == '-') { // 检查是否有左对齐标志
+			is_left_align = 1;
+			fmt++;
+		}
+
+		if (*fmt == '0') {
 			cs = '0';
 			fmt++;
 		}
 		else {
 			cs = ' ';
 		}
+
 		while (((unsigned char)(*fmt) >= '0') && ((unsigned char)(*fmt) <= '9')) {
 			align_nr *= 10;
 			align_nr += *fmt - '0';
 			fmt++;
 		}
 
-		char * q = inner_buf;
+		char *q = inner_buf;
 		memset(q, 0, sizeof(inner_buf));
 
 		switch (*fmt) {
@@ -112,13 +119,26 @@ PUBLIC int vsprintf(char *buf, const char *fmt, va_list args)
 			break;
 		}
 
-		int k;
-		for (k = 0; k < ((align_nr > strlen(inner_buf)) ? (align_nr - strlen(inner_buf)) : 0); k++) {
-			*p++ = cs;
-		}
-		q = inner_buf;
-		while (*q) {
-			*p++ = *q++;
+		int padding = ((align_nr > strlen(inner_buf)) ? (align_nr - strlen(inner_buf)) : 0);
+
+		if (is_left_align) {
+			// 如果左对齐，先输出内容，再填充字符
+			q = inner_buf;
+			while (*q) {
+				*p++ = *q++;
+			}
+			for (int k = 0; k < padding; k++) {
+				*p++ = cs;
+			}
+		} else {
+			// 如果右对齐，先填充字符，再输出内容
+			for (int k = 0; k < padding; k++) {
+				*p++ = cs;
+			}
+			q = inner_buf;
+			while (*q) {
+				*p++ = *q++;
+			}
 		}
 	}
 
@@ -126,6 +146,7 @@ PUBLIC int vsprintf(char *buf, const char *fmt, va_list args)
 
 	return (p - buf);
 }
+
 
 
 /*======================================================================*

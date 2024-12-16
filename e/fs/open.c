@@ -76,7 +76,7 @@ PUBLIC int do_open()
 	if (i >= NR_FILE_DESC)
 		panic("f_desc_table[] is full (PID:%d)", proc2pid(pcaller));
 
-	LogFuncEntry("FS-open", LEVEL_TRACE, "start to search %s, fd:%d", pathname, fd);
+	// LogFuncEntry("FS-open", LEVEL_TRACE, "start to search %s, fd:%d", pathname, fd);
 
 	// printl("%s\n",pathname);
 	int inode_nr = search_file(pathname);
@@ -84,9 +84,9 @@ PUBLIC int do_open()
 
 	struct inode * pin = 0; // first inode of this file
 	if (flags & O_CREAT) {
-		printl("{fslog} %d\n", flags); // success to here, and node_nr is 0 which means really no node_nr with the name
+		// printl("{fslog} %d\n", flags); // success to here, and node_nr is 0 which means really no node_nr with the name
 		if (inode_nr) { // judge whether inode_nr is ZERO(INVALID), if not, means file exists 
-			printl("{FS} file exists.\n");
+			// printl("{FS} file exists.\n");
 			return -1;
 		}
 		else {
@@ -108,7 +108,7 @@ PUBLIC int do_open()
 			return -1;
 		pin = get_inode(dir_inode->i_dev, inode_nr);
 		count_surplus_inode_link(pin); // 剩余node的引用
-		printl("sizeof pinode's point to %d\n", pin->i_size);
+		// printl("sizeof pinode's point to %d\n", pin->i_size);
 	}
 
 	if (pin) {
@@ -146,7 +146,7 @@ PUBLIC int do_open()
 		return -1;
 	}
 
-	DEBUG_PRINT("fs open", "fd is %d -size: %d", fd, pcaller->filp[fd]->fd_inode->i_size);
+	// DEBUG_PRINT("fs open", "fd is %d -size: %d", fd, pcaller->filp[fd]->fd_inode->i_size);
 	return fd;
 }
 
@@ -169,14 +169,14 @@ int do_mkdir(){
 
 	struct inode * pin = 0; // first inode of this file
 	if (flags & O_CREAT) {
-		printl("{fslog} %d\n", flags); // success to here, and node_nr is 0 which means really no node_nr with the name
+		// printl("{fslog} %d\n", flags); // success to here, and node_nr is 0 which means really no node_nr with the name
 		if (inode_nr) {
-			printl("{FS_DIR} dir exists.\n");
+			// printl("{FS_DIR} dir exists.\n");
 			return -1;
 		}
 		else {
 			pin = create_dir(pathname, flags);
-			printl("{FS_DIR} %s is created successfully\n", pathname);
+			// printl("{FS_DIR} %s is created successfully\n", pathname);
 		}
 		// 
 	}
@@ -201,12 +201,12 @@ PRIVATE struct inode * create_file(char * path, int flags)
 	char filename[MAX_PATH];
 	struct inode * dir_inode;
 
-	printl("{fslog} path:%s", path);
+	// printl("{fslog} path:%s", path);
 
 	if (strip_path(filename, path, &dir_inode) != 0)
 		return 0;
 
-	printl("{fslog} stage 'create_file': filename:%s, dir_inode:%d", filename, dir_inode->i_num);
+	// printl("{fslog} stage 'create_file': filename:%s, dir_inode:%d", filename, dir_inode->i_num);
 
 	int inode_nr = alloc_imap_bit(dir_inode->i_dev);
 	int free_sect_nr = alloc_smap_bit(dir_inode->i_dev,
@@ -238,12 +238,12 @@ PRIVATE struct inode * create_dir(char * path, int flags)
 	char filename[MAX_PATH];
 	struct inode * dir_inode;
 
-	printl("{fslog} path:%s\n", path);
+	// printl("{fslog} path:%s\n", path);
 
 	if (strip_path(filename, path, &dir_inode) != 0)
 		return 0;
 
-	printl("{fslog} stage 'create_dir': dirname:%s, parent_inode:%d\n", filename, dir_inode->i_num);
+	// printl("{fslog} stage 'create_dir': dirname:%s, parent_inode:%d\n", filename, dir_inode->i_num);
 
 	int inode_nr = alloc_imap_bit(dir_inode->i_dev);
 	int free_sect_nr = alloc_smap_bit(dir_inode->i_dev, NR_DEFAULT_FILE_SECTS);
@@ -266,7 +266,7 @@ PUBLIC int do_close()
 {
 	int fd = fs_msg.FD;
 	put_inodes_link(pcaller->filp[fd]->fd_inode);
-	printl("closed indoe size =%d", pcaller->filp[fd]->fd_inode->i_size);
+	// printl("closed indoe size =%d", pcaller->filp[fd]->fd_inode->i_size);
 	if (--pcaller->filp[fd]->fd_cnt == 0)
 		pcaller->filp[fd]->fd_inode = 0;
 	pcaller->filp[fd] = 0;
@@ -412,7 +412,7 @@ PRIVATE int alloc_smap_bit(int dev, int nr_sects_to_alloc)
 			}
 
 			for (; k < 8; k++) { /* repeat till enough bits are set */
-				// assert(((fsbuf[j] >> k) & 1) == 0);
+				assert(((fsbuf[j] >> k) & 1) == 0);
 				fsbuf[j] |= (1 << k);
 				if (--nr_sects_to_alloc == 0)
 					break;
