@@ -139,7 +139,8 @@
 #define TASK_FS		3
 #define TASK_MM		4
 #define TASK_LOGS   5
-#define INIT		6
+#define TASK_M      6
+#define INIT		7
 #define ANY		(NR_TASKS + NR_PROCS + 10)
 #define NO_TASK		(NR_TASKS + NR_PROCS + 20)
 
@@ -182,6 +183,9 @@ enum msgtype {
 
 	/* FS & MM */
 	FORK, EXIT, KILL,
+
+	/* MONITOR*/
+	CHECK, ADD, CLEAR,
 
 	/* TTY, SYS, FS, MM, etc */
 	SYSCALL_RET,
@@ -229,6 +233,7 @@ enum TTYSCRCTL {
 #define	PID		u.m3.m3i2
 #define	RETVAL		u.m3.m3i1
 #define	STATUS		u.m3.m3i1
+// #define	PERMISSION		u.m3.m3i3
 
 
 

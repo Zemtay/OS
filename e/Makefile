@@ -29,7 +29,7 @@ ORANGESKERNEL	= kernel.bin
 LIB		= lib/orangescrt.a
 
 OBJS		= kernel/kernel.o kernel/start.o kernel/main.o\
-			kernel/clock.o kernel/keyboard.o kernel/tty.o kernel/logtask.o kernel/console.o\
+			kernel/clock.o kernel/keyboard.o kernel/tty.o kernel/logtask.o kernel/monitortask.o kernel/console.o\
 			kernel/i8259.o kernel/global.o kernel/protect.o kernel/proc.o\
 			kernel/systask.o kernel/hd.o\
 			kernel/kliba.o kernel/klib.o\
@@ -58,7 +58,8 @@ everything : $(ORANGESBOOT) $(ORANGESKERNEL)
 
 all : realclean everything
 
-image : realclean everything clean buildimg
+# image : realclean everything clean buildimg
+image : everything buildimg
 
 clean :
 	rm -f $(OBJS) $(LOBJS)
@@ -111,6 +112,9 @@ kernel/tty.o: kernel/tty.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/logtask.o: kernel/logtask.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/monitortask.o: kernel/monitortask.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/console.o: kernel/console.c

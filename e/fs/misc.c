@@ -163,16 +163,19 @@ PUBLIC int search_file(char * path)
 	char filename[MAX_PATH];
 	memset(filename, 0, MAX_FILENAME_LEN);
 	struct inode * dir_inode;
+	// printl("strip_path\n");
 	if (strip_path(filename, path, &dir_inode) != 0)
 		return INVALID_INODE;
 
 	if (filename[0] == 0)	/* path: "/" */
 		return dir_inode->i_num;
 
+	// printl("low_search_entry\n");
 	int nr = low_search_entry(dir_inode, filename);
 	
 	// free dir inode
 	if (dir_inode->i_num != ROOT_INODE) {
+		// printl("put_inode\n");
 		put_inode(dir_inode);
 	}
 

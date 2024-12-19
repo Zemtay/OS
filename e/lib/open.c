@@ -32,6 +32,21 @@
  *****************************************************************************/
 PUBLIC int open(const char *pathname, int flags)
 {
+	MESSAGE m_msg;
+
+	m_msg.type	= CHECK;
+	m_msg.PATHNAME	= (void*)pathname;
+	m_msg.FLAGS	= flags;
+	m_msg.NAME_LEN	= strlen(pathname);
+
+	send_recv(BOTH, TASK_M, &m_msg);
+	if(m_msg.RETVAL == 0){
+		printl("**permission denied!\n");
+		assert(m_msg.RETVAL == 1);
+	}
+	// printl("the permission is: %d\n", m_msg.RETVAL);
+	// assert(m_msg.RETVAL == 1);
+
 	MESSAGE msg;
 
 	msg.type	= OPEN;
@@ -44,6 +59,18 @@ PUBLIC int open(const char *pathname, int flags)
 	assert(msg.type == SYSCALL_RET);
 
 	return msg.FD;
+
+	// if(flags == O_CREAT){
+	// 	MESSAGE m_msg;
+	// 	m_msg.type	= ADD;
+	// 	m_msg.PATHNAME	= (void*)pathname;
+	// 	// m_msg.FLAGS	= flags;
+	// 	m_msg.NAME_LEN	= strlen(pathname);
+
+	// 	send_recv(BOTH, TASK_M, &m_msg);
+	// 	// printl("the permission is: %d\n", m_msg.RETVAL);
+	// 	assert(m_msg.RETVAL == 0);
+	// }
 }
 
 
