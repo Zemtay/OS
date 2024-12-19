@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "global.h": "c",
+        "tty.h": "c",
+        "unistd.h": "c",
+        "protect.h": "c",
+        "proto.h": "c",
+        "proc.h": "c",
+        "fs.h": "c",
+        "dirent.h": "c",
+        "stdio.h": "c",
+        "type.h": "c",
+        "console.h": "c",
+        "const.h": "c",
+        "mdirent.h": "c",
+        "keyboard.h": "c",
+        "string.h": "c",
+        "keywise.h": "c",
+        "logfila.h": "c",
+        "logfilament.h": "c"
+    }
+}
