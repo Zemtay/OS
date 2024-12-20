@@ -86,7 +86,7 @@ void init_permission(){
 
 PRIVATE int check_permission(){
     // printl("want to check permission.\n");
-    if(m_msg.FLAGS&O_CREAT == 1){  //O_CREAT|o_RDWR，由此出现了3
+    if(m_msg.FLAGS&O_CREAT == 1){  //O_CREAT|O_RDWR，由此出现了3
         return 1;
     }
 
@@ -135,8 +135,21 @@ PRIVATE int add_permission(){
     permission_map[src][inode] = 1;
     return 0;
 }
+
 PRIVATE int clear_permission(){
+    char pathname[MAX_PATH];
+
+	/* get parameters from the message */
+	int name_len = m_msg.NAME_LEN;	/* length of filename */
+    int src = m_msg.source;
+	assert(name_len < MAX_PATH);
+	phys_copy((void*)va2la(TASK_M, pathname),
+		  (void*)va2la(src, m_msg.PATHNAME),
+		  name_len);
+	pathname[name_len] = 0;
+    // printl("===>filepath %s, pid %d\n", pathname, src);
+
     int inode = search_file(m_msg.PATHNAME);
-    permission_map[m_msg.PID][inode] = 0;
+    permission_map[src][inode] = 0;
     return 0;
 }

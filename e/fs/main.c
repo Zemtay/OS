@@ -170,12 +170,13 @@ PRIVATE void init_fs() {
 	send_recv(BOTH, dd_map[MAJOR(ROOT_DEV)].driver_nr, &driver_msg);
 
 	/* make FS */
-	RD_SECT(ROOT_DEV, 1);
-	sb = (struct super_block *)fsbuf;
-	if (sb->magic != MAGIC_V1) {
-		printl("{FS}␣mkfs\n");
-		mkfs();
-	}
+	// RD_SECT(ROOT_DEV, 1);
+	// sb = (struct super_block *)fsbuf;
+	// if (sb->magic != MAGIC_V1) {
+	// 	printl("{FS}␣mkfs\n");
+	// 	mkfs();
+	// }
+	mkfs();
 
 	/* load super block of ROOT */
 	read_super_block(ROOT_DEV);
