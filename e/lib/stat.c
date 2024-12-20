@@ -33,7 +33,7 @@
 PUBLIC int stat(const char *path, struct stat *buf)
 {
 	MESSAGE msg;
-	printl("{stat} path %s\n", path);
+	// printl("{stat} path %s\n", path);
 
 	msg.type	= STAT;
 

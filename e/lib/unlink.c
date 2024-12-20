@@ -31,6 +31,21 @@
  *****************************************************************************/
 PUBLIC int unlink(const char * pathname)
 {
+	MESSAGE m_msg;
+
+	m_msg.type	= CHECK;
+	m_msg.PATHNAME	= (void*)pathname;
+	m_msg.NAME_LEN	= strlen(pathname);
+
+	send_recv(BOTH, TASK_M, &m_msg);
+	printl("**unlink permission %d, m_msg.src: %d, pathname: %s\n", m_msg.RETVAL, m_msg.source, pathname);
+	if(m_msg.RETVAL == 0){
+		printl("***unlink permission denied!\n");
+		// printl("the permission is: %d\n", m_msg.RETVAL);
+		assert(m_msg.RETVAL == 0);
+		return 0;
+	}
+
 	MESSAGE msg;
 	msg.type   = UNLINK;
 

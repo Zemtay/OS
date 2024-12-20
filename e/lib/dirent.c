@@ -31,7 +31,7 @@ int opendir(char *path, DIR *d) {
 
 void readdir(DIR *dir, char *ret) {
 	if (dir == 0) {
-		return 0;
+		return;
 	}
 	char out[MAX_PATH];
 

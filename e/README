@@ -1,3 +1,3 @@
 # README
-
+## 要make clean
 每次修改项目文件后都要在command文件夹下`make install`

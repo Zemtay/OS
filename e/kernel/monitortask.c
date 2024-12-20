@@ -15,6 +15,9 @@ PRIVATE void init_permission();
 PRIVATE int check_permission();
 PRIVATE int add_permission();
 PRIVATE int clear_permission();
+PRIVATE int permit_instructions();
+PRIVATE int permit_files();
+PRIVATE int rpermit_files();
 
 PUBLIC void task_m1(){
     while(1){
@@ -34,6 +37,18 @@ PUBLIC void task_m() {
         int src  = m_msg.source;
 
         switch(type){
+        case PERMIT_P:
+            m_msg.RETVAL = permit_instructions();
+            // printl("the permission: %d\n", m_msg.RETVAL);
+            break;
+        case PERMIT_F:
+            m_msg.RETVAL = permit_files();
+            // printl("the permission: %d\n", m_msg.RETVAL);
+            break;
+        case RPERMIT_F:
+            m_msg.RETVAL = rpermit_files();
+            // printl("the permission: %d\n", m_msg.RETVAL);
+            break;
         case CHECK:
             m_msg.RETVAL = check_permission();
             // printl("the permission: %d\n", m_msg.RETVAL);
@@ -56,27 +71,27 @@ PUBLIC void task_m() {
 }
 
 void init_permission(){
-    for(int i = 0; i < (NR_TASKS+1); i ++){
-		for(int j = 0; j < (NR_INODE); j ++){
+    for(int i = 0; i < (NR_TASKS); i ++){
+		for(int j = 0; j <= (NR_INODE); j ++){
 			permission_map[i][j] = 1;
 		}
 	}
-    for(int i = NR_TASKS+1; i < (NR_TASKS + NR_PROCS); i ++){
-		for(int j = 0; j < (NR_INODE); j ++){
+    for(int i = NR_TASKS; i < (NR_TASKS + NR_PROCS); i ++){
+		for(int j = 0; j <= (NR_INODE); j ++){
 			permission_map[i][j] = 0;
 		}
 	}
     // INIT需要打开tty0,cmd.tar,kernel.bin 7:0,3,4,需要接管
-    permission_map[7][0] = 1;
+    permission_map[7][2] = 1;
     permission_map[7][5] = 1;
-    // INIT_11需要打开tty1，kernel.bin 11,1,4
-    permission_map[11][1] = 1;
-    // permission_map[11][3] = 1;
-    // permission_map[11][4] = 1;
-    // INIT_12需要打开tty2 12,2
-    permission_map[12][2] = 1;
+    // INIT_11需要打开tty1，可以执行所有指令 11,1,4
+    permission_map[11][3] = 1;
+    // // permission_map[11][3] = 1;
+    // // permission_map[11][4] = 1;
+    // // INIT_12需要打开tty2 12,2
+    // permission_map[12][] = 1;
     // permission_map[11][2] = 1;
-    // permission_map[12][4] = 1;
+    permission_map[12][4] = 1;
     // for(int i = 0; i < (NR_TASKS + NR_PROCS); i ++){
 	// 	for(int j = 0; j < (NR_INODE); j ++){
 	// 		permission_map[i][j] = 1;
@@ -86,7 +101,7 @@ void init_permission(){
 
 PRIVATE int check_permission(){
     // printl("want to check permission.\n");
-    if(m_msg.FLAGS&O_CREAT == 1){  //O_CREAT|O_RDWR，由此出现了3
+    if((m_msg.FLAGS&O_CREAT) == 1){  //O_CREAT|O_RDWR，由此出现了3
         return 1;
     }
 
@@ -102,18 +117,19 @@ PRIVATE int check_permission(){
 	pathname[name_len] = 0;
     // printl("===>filepath %s, pid %d\n", pathname, src);
 
+    //居然可能找不到这些文件
     if(!strcmp(pathname, "/dev_tty0")){
-        return permission_map[src][0];
+        return permission_map[src][2];
     }
     if(!strcmp(pathname, "/dev_tty1")){
-        return permission_map[src][1];
+        return permission_map[src][3];
     }
     if(!strcmp(pathname, "/dev_tty2")){
-        return permission_map[src][2];
+        return permission_map[src][4];
     }
     int inode = search_file(pathname); //不能使用m_msg.PATHNAME
     pcaller     = &proc_table[src];
-    printl("===>option %d, process is %s, filepath %s, pid is %d, inode is %d, permission %d.\n", m_msg.FLAGS, pcaller->name, pathname, src, inode, permission_map[src][inode]);
+    printl("====>option %d, process is %s, filepath %s, pid is %d, inode is %d, permission %d\n", m_msg.FLAGS, pcaller->name, pathname, src, inode, permission_map[src][inode]);
     return permission_map[src][inode];
     // return 1;
 }
@@ -123,16 +139,18 @@ PRIVATE int add_permission(){
 
 	/* get parameters from the message */
 	int name_len = m_msg.NAME_LEN;	/* length of filename */
+    int pid = m_msg.PROC_NR;
     int src = m_msg.source;
 	assert(name_len < MAX_PATH);
 	phys_copy((void*)va2la(TASK_M, pathname),
 		  (void*)va2la(src, m_msg.PATHNAME),
 		  name_len);
 	pathname[name_len] = 0;
-    // printl("===>filepath %s, pid %d\n", pathname, src);
 
-    int inode = search_file(m_msg.PATHNAME);
-    permission_map[src][inode] = 1;
+    int inode = search_file(pathname);  //注意不是m_msg.PATHNAME
+    permission_map[pid][inode] = 1;
+
+    printl("===>ADD permission, filepath %s, pid is %d, inode is %d, permission %d.\n", pathname, pid, inode, permission_map[pid][inode]);
     return 0;
 }
 
@@ -142,6 +160,7 @@ PRIVATE int clear_permission(){
 	/* get parameters from the message */
 	int name_len = m_msg.NAME_LEN;	/* length of filename */
     int src = m_msg.source;
+    int pid = m_msg.PROC_NR;
 	assert(name_len < MAX_PATH);
 	phys_copy((void*)va2la(TASK_M, pathname),
 		  (void*)va2la(src, m_msg.PATHNAME),
@@ -149,7 +168,36 @@ PRIVATE int clear_permission(){
 	pathname[name_len] = 0;
     // printl("===>filepath %s, pid %d\n", pathname, src);
 
-    int inode = search_file(m_msg.PATHNAME);
-    permission_map[src][inode] = 0;
+    int inode = search_file(pathname);
+    permission_map[pid][inode] = 0;
+
+    pcaller     = &proc_table[src];
+    printl("===>CLEAR permission, filepath %s, pid is %d, inode is %d, permission %d.\n", pathname, pid, inode, permission_map[pid][inode]);
+    return 0;
+}
+
+PRIVATE int permit_instructions(){
+    int src = m_msg.source;
+    for(int i = SYS_FILE + 1; i <= SYS_FILE+PROG_FILE; i ++){
+        permission_map[src][i] = 1;
+    }
+    return 0;
+}
+
+PRIVATE int permit_files(){
+    int src = m_msg.source;
+    for(int i = SYS_FILE+PROG_FILE + 1; i <= NR_INODE; i ++){
+        permission_map[src][i] = 1;
+    }
+    permission_map[src][1] = 1;
+    return 0;
+}
+
+PRIVATE int rpermit_files(){
+    int src = m_msg.source;
+    for(int i = SYS_FILE+PROG_FILE + 1; i <= NR_INODE; i ++){
+        permission_map[src][i] = 0;
+    }
+    permission_map[src][1] = 0;
     return 0;
 }

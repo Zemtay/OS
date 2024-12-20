@@ -247,21 +247,37 @@ PUBLIC int disklog(char * logstr)
 
 /* } */
 
-#define LOG_PROCS			1 /* YES */
+#define LOG_PROCS				0 /* YES */
 
-#define LOG_FD_TABLE			1
-#define LOG_INODE_TABLE			1
-#define LOG_SMAP			1
-#define LOG_IMAP			1
-#define LOG_INODE_ARRAY			1
-#define LOG_ROOT_DIR			1
+#define LOG_FD_TABLE			0
+#define LOG_INODE_TABLE			0
+#define LOG_SMAP				0
+#define LOG_IMAP				0
+#define LOG_INODE_ARRAY			0
+#define LOG_ROOT_DIR			0
 
-#define LOG_MSG_SRC2DST			1 /* YES */
-#define LOG_ARROW_PARENT_CHILD		1 /* YES */
+#define LOG_MSG_SRC2DST			0 /* YES */
+#define LOG_ARROW_PARENT_CHILD	0 /* YES */
 
-#define LOG_ARROW_PROC_FD		1
-#define LOG_ARROW_FD_INODE		1
-#define LOG_ARROW_INODE_INODEARRAY	1
+#define LOG_ARROW_PROC_FD		0
+#define LOG_ARROW_FD_INODE		0
+#define LOG_ARROW_INODE_INODEARRAY	0
+
+// #define LOG_PROCS			1 /* YES */
+
+// #define LOG_FD_TABLE			1
+// #define LOG_INODE_TABLE			1
+// #define LOG_SMAP			1
+// #define LOG_IMAP			1
+// #define LOG_INODE_ARRAY			1
+// #define LOG_ROOT_DIR			1
+
+// #define LOG_MSG_SRC2DST			1 /* YES */
+// #define LOG_ARROW_PARENT_CHILD		1 /* YES */
+
+// #define LOG_ARROW_PROC_FD		1
+// #define LOG_ARROW_FD_INODE		1
+// #define LOG_ARROW_INODE_INODEARRAY	1
 
 #if (LOG_SMAP == 1 || LOG_IMAP == 1 || LOG_INODE_ARRAY || LOG_ROOT_DIR == 1)
 static char _buf[SECTOR_SIZE];

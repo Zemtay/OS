@@ -96,7 +96,7 @@ PUBLIC int do_open()
 	}
 	else { // load an existed file's inode
 		if (inode_nr == INVALID_INODE){ // not exists
-			DEBUG_PRINT("fs open", "the inode want to read is null");
+			// DEBUG_PRINT("fs open", "the inode want to read is null");
 			return -1;
 		}
 
@@ -146,7 +146,7 @@ PUBLIC int do_open()
 		return -1;
 	}
 
-	DEBUG_PRINT("fs open", "fd is %d -size: %d", fd, pcaller->filp[fd]->fd_inode->i_size);
+	// DEBUG_PRINT("fs open", "fd is %d -size: %d", fd, pcaller->filp[fd]->fd_inode->i_size);
 	return fd;
 }
 
@@ -201,12 +201,12 @@ PRIVATE struct inode * create_file(char * path, int flags)
 	char filename[MAX_PATH];
 	struct inode * dir_inode;
 
-	printl("{fslog} path:%s", path);
+	// printl("{fslog} path:%s", path);
 
 	if (strip_path(filename, path, &dir_inode) != 0)
 		return 0;
 
-	printl("{fslog} stage 'create_file': filename:%s, dir_inode:%d", filename, dir_inode->i_num);
+	// printl("{fslog} stage 'create_file': filename:%s, dir_inode:%d", filename, dir_inode->i_num);
 
 	int inode_nr = alloc_imap_bit(dir_inode->i_dev);
 	int free_sect_nr = alloc_smap_bit(dir_inode->i_dev,
@@ -238,12 +238,12 @@ PRIVATE struct inode * create_dir(char * path, int flags)
 	char filename[MAX_PATH];
 	struct inode * dir_inode;
 
-	printl("{fslog} path:%s\n", path);
+	// printl("{fslog} path:%s\n", path);
 
 	if (strip_path(filename, path, &dir_inode) != 0)
 		return 0;
 
-	printl("{fslog} stage 'create_dir': dirname:%s, parent_inode:%d\n", filename, dir_inode->i_num);
+	// printl("{fslog} stage 'create_dir': dirname:%s, parent_inode:%d\n", filename, dir_inode->i_num);
 
 	int inode_nr = alloc_imap_bit(dir_inode->i_dev);
 	int free_sect_nr = alloc_smap_bit(dir_inode->i_dev, NR_DEFAULT_FILE_SECTS);
@@ -266,7 +266,7 @@ PUBLIC int do_close()
 {
 	int fd = fs_msg.FD;
 	put_inodes_link(pcaller->filp[fd]->fd_inode);
-	printl("closed indoe size =%d", pcaller->filp[fd]->fd_inode->i_size);
+	// printl("closed inode size =%d", pcaller->filp[fd]->fd_inode->i_size);
 	if (--pcaller->filp[fd]->fd_cnt == 0)
 		pcaller->filp[fd]->fd_inode = 0;
 	pcaller->filp[fd] = 0;

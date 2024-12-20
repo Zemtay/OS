@@ -90,7 +90,7 @@ PUBLIC int execv(const char *path, char * argv[])
 	msg.BUF		= (void*)arg_stack;
 	msg.BUF_LEN	= stack_len;
 
-	DEBUG_PRINT("execv", "current pid:%d", proc2pid(pcaller));
+	// DEBUG_PRINT("execv", "current pid:%d", proc2pid(pcaller));
 	send_recv(BOTH, TASK_MM, &msg);
 	printx("nop\n");
 	assert(msg.type == SYSCALL_RET);

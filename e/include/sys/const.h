@@ -185,7 +185,7 @@ enum msgtype {
 	FORK, EXIT, KILL,
 
 	/* MONITOR*/
-	CHECK, ADD, CLEAR,
+	PERMIT_P, PERMIT_F, RPERMIT_F, CHECK, ADD, CLEAR,
 
 	/* TTY, SYS, FS, MM, etc */
 	SYSCALL_RET,
@@ -301,6 +301,8 @@ enum TTYSCRCTL {
 #define	NR_INODE	64	/* FIXME */
 #define	NR_SUPER_BLOCK	8
 
+#define SYS_FILE	6
+#define PROG_FILE	12
 
 /* INODE::i_mode (octal, lower 12 bits reserved) */
 #define I_TYPE_MASK     0170000

@@ -201,7 +201,7 @@ void untar(const char *filename) {
 		 */
 		char filepath[256] = "";
 		get_full_path(phdr->name, filepath);
-		printf("currently file path: %s\n", filepath);
+		// printf("currently file path: %s\n", filepath);
 		int fdout = open(filepath, O_CREAT | O_RDWR);
 		if (fdout == -1) {
 			printf("    failed to extract file: %s\n", phdr->name);
@@ -234,6 +234,51 @@ void untar(const char *filename) {
  *
  * @param tty_name  TTY file name.
  *****************************************************************************/
+void shell_permission(){
+	MESSAGE m_msg;
+	m_msg.type	= PERMIT_P;
+	send_recv(BOTH, TASK_M, &m_msg);
+	assert(m_msg.RETVAL == 0);
+}
+
+void set_permission(){
+	MESSAGE m_msg;
+	m_msg.type	= PERMIT_F;
+	send_recv(BOTH, TASK_M, &m_msg);
+	assert(m_msg.RETVAL == 0);
+};
+
+void ret_permission(){
+	MESSAGE m_msg;
+	m_msg.type	= RPERMIT_F;
+	send_recv(BOTH, TASK_M, &m_msg);
+	assert(m_msg.RETVAL == 0);
+};
+
+PUBLIC void add_permission(int pid, char *filepath)
+{
+	MESSAGE msg;
+	msg.type	    = ADD;
+	msg.PATHNAME	= filepath;
+	msg.PROC_NR 	= pid;
+	msg.NAME_LEN	= strlen(filepath);
+
+	// DEBUG_PRINT("execv", "current pid:%d", proc2pid(pcaller));
+	send_recv(BOTH, TASK_M, &msg);
+}
+
+PUBLIC void clear_permission(int pid, char *filepath)
+{
+	MESSAGE msg;
+	msg.type	    = CLEAR;
+	msg.PATHNAME	= filepath;
+	msg.PROC_NR 	= pid;
+	msg.NAME_LEN	= strlen(filepath);
+
+	// DEBUG_PRINT("execv", "current pid:%d", proc2pid(pcaller));
+	send_recv(BOTH, TASK_M, &msg);
+}
+
 void shabby_shell(const char *tty_name) {
 	int fd_stdin = open(tty_name, O_RDWR);
 	assert(fd_stdin == 0);
@@ -281,36 +326,55 @@ void shabby_shell(const char *tty_name) {
 		}
 
 		argv[argc] = 0; // 确保参数列表以 NULL 结束
-		DEBUG_PRINT("shell", "argc %d", argc);
+		// DEBUG_PRINT("shell", "argc %d", argc);
 
 		if (argc == 0)
 			continue;
 
 		char full_path[256] = "";
 		get_full_path(argv[0], full_path);
-		printf("[shell] want to exec %s \n", full_path);
-		int fd = open(full_path, O_RDWR);
-		if (fd == -1) {
-			if (rdbuf[0]) {
-				write(1, "{", 1);
-				write(1, rdbuf, r);
-				write(1, "}\n", 2);
-			}
-		} else {
-			int ok = close(fd);
-			int pid = fork();
-			if (pid != 0) { /* parent */
-				if (!is_background) {
-					int s;
-					wait(&s); // 前台进程等待子进程完成
-				} else {
-					printf("[shell] Background process started. PID: %d\n", pid);
+		// printf("parsing %s, %s, %s", argv[0], argv[1], argv[2]);
+		if(!strcmp(argv[0], "pro\0")){
+			int pid = (argv[1][0]-'0')*10+(argv[1][1]-'0');  //注意要从字符串转化
+			add_permission(pid, argv[2]);
+		}
+		else if(!strcmp(argv[0], "low\0")){
+			int pid = (argv[1][0]-'0')*10+(argv[1][1]-'0');
+			clear_permission(pid, argv[2]);
+		}
+		else{
+			printf("[shell] want to exec %s \n", full_path);
+			int fd = open(full_path, O_RDWR);
+			if (fd == -1) {
+				if (rdbuf[0]) {
+					write(1, "{", 1);
+					write(1, rdbuf, r);
+					write(1, "}\n", 2);
 				}
-			} else { /* child */
-				// printf("[shell] now exec %s \n", full_path);
-				argv[0] = full_path;
-				execv(full_path, argv); // 执行命令
-	
+			} else {
+				int ok = close(fd);
+				int pid = fork();  // 创建子进程
+				if (pid != 0) { /* parent */
+					if (!is_background) {
+						int s;
+						wait(&s); // 前台进程等待子进程完成
+					} else {
+						printf("[shell] Background process started. PID: %d\n", pid);
+					}
+				} else { /* child */
+					// set_permission();
+					if(!strcmp(full_path, "rm")){
+						MESSAGE m_msg;
+						m_msg.type	= CLEAR;
+						char pathname[2] = "/\0";
+						m_msg.PATHNAME	= pathname;
+						m_msg.NAME_LEN	= strlen(pathname);
+						send_recv(BOTH, TASK_M, &m_msg);
+					}
+					argv[0] = full_path;
+					execv(full_path, argv); // 执行命令
+					ret_permission();
+				}
 			}
 		}
 	}
@@ -319,6 +383,31 @@ void shabby_shell(const char *tty_name) {
 	close(0);
 }
 
+void permission_ls(char *full_path){
+	// ls需要读根目录
+if(strcmp(full_path, "/ls\0")){
+					MESSAGE m_msg;
+					m_msg.type	= ADD;
+					char pathname[2] = "/\0";
+					m_msg.PATHNAME	= pathname;
+					m_msg.NAME_LEN	= strlen(pathname);
+
+					send_recv(BOTH, TASK_M, &m_msg);
+					printl("the permission for ls add is: %d\n", m_msg.RETVAL);
+					// assert(m_msg.RETVAL == 0);
+				}
+if(strcmp(full_path, "/ls\0")){
+					MESSAGE m_msg;
+					m_msg.type	= CLEAR;
+					char pathname[2] = "/\0";
+					m_msg.PATHNAME	= pathname;
+					m_msg.NAME_LEN	= strlen(pathname);
+
+					send_recv(BOTH, TASK_M, &m_msg);
+					printl("the permission for ls clear is: %d\n", m_msg.RETVAL);
+					// assert(m_msg.RETVAL == 0);
+				}
+}
 /*****************************************************************************
  *                                Init
  *****************************************************************************/
@@ -350,6 +439,7 @@ void Init() {
 			close(fd_stdin);
 			close(fd_stdout);
 
+			shell_permission();
 			shabby_shell(tty_list[i]);
 			assert(0);
 		}
