@@ -19,12 +19,13 @@ PRIVATE int permit_instructions();
 PRIVATE int permit_files();
 PRIVATE int rpermit_files();
 PRIVATE int do_cipher();
+PRIVATE int do_setkey();
 
-PUBLIC void task_m1(){
-    while(1){
+// 37*64
+PRIVATE int permission_map[NR_TASKS + NR_PROCS][NR_INODE];
+PRIVATE unsigned char s[256] = { 0 }, s2[256] = { 0 };//S-box
+PRIVATE char key[256] = { "justfortest" };
 
-    }
-}
 PUBLIC void task_m() {
     // 注意不能用printf;且要写成无限循环
     printl("{MONITOR} Task MONITOR begins.\n");
@@ -62,6 +63,9 @@ PUBLIC void task_m() {
             break;
         case CIPHER:
             m_msg.RETVAL = do_cipher();
+            break;
+        case SETKEY:
+            m_msg.RETVAL = do_setkey();
             break;
         default:
             dump_msg("M::unknown message:", &m_msg);
@@ -204,6 +208,77 @@ PRIVATE int rpermit_files(){
     }
     permission_map[src][1] = 0;
     printl("===>RPERMIT permission, pid is %d\n", src);
+    return 0;
+}
+
+//程序开始
+#include "stdio.h"
+#include "string.h"
+#include "stdio.h"
+
+typedef unsigned longULONG;
+ 
+/*初始化函数*/
+void rc4_init(unsigned char*s, unsigned char*key, unsigned long Len)
+{
+    int i = 0, j = 0;
+    char k[256] = { 0 };
+    unsigned char tmp = 0;
+    for (i = 0; i<256; i++)
+    {
+        s[i] = i;
+        k[i] = key[i%Len];
+    }
+    for (i = 0; i<256; i++)
+    {
+        j = (j + s[i] + k[i]) % 256;
+        tmp = s[i];
+        s[i] = s[j];//交换s[i]和s[j]
+        s[j] = tmp;
+    }
+}
+ 
+/*加解密*/
+void rc4_crypt(unsigned char*s, unsigned char*Data, unsigned long Len)
+{
+    phys_copy(s, s2, 256); //很重要
+    int i = 0, j = 0, t = 0;
+    unsigned long k = 0;
+    unsigned char tmp;
+    // printl("*****s[t]\n");
+    for (k = 0; k<Len; k++)
+    {
+        i = (i + 1) % 256;
+        j = (j + s[i]) % 256;
+        tmp = s[i];
+        s[i] = s[j];//交换s[x]和s[y]
+        s[j] = tmp;
+        t = (s[i] + s[j]) % 256;
+        Data[k] ^= s[t];
+        printl("%x ",s[t]);
+    }
+    printl("*****\n");
+}
+ 
+PUBLIC void  cipher(void* p_dst, void* pData, int size)
+{
+    unsigned long len = strlen(pData);
+    printl("|||====before, %s\n", pData);  //又来，不是printf
+    rc4_crypt(s, (unsigned char*)pData, len);//加密
+    // rc4_crypt(s2, (unsigned char*)pData, len);//解密
+    printl("|||====after, %s\n", pData);
+    return 0;
+}
+
+PRIVATE int do_setkey(){
+    memset(key, 0, 256);
+    printl("|||ready to set key: %s\n", key);
+    phys_copy(key, m_msg.BUF, m_msg.CNT);
+    rc4_init(s, (unsigned char*)key, strlen(key));//已经完成了初始化
+    for (int i = 0; i<256; i++)//用s2[i]暂时保留经过初始化的s[i]，很重要的！！！
+    {
+        s2[i] = s[i];
+    }
     return 0;
 }
 

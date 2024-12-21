@@ -456,6 +456,24 @@ void test_cipher()
 
 }
 
+void set_cipherkey(char *rdbuf, int r){
+	MESSAGE m_msg;
+	// int pid = getpid();
+	// phys_copy((void*)va2la(src, buf + bytes_rw),
+	// 					(void*)va2la(pid, rdbuf),
+	// 					bytes);
+	m_msg.type	= SETKEY;
+	m_msg.BUF = (void*)rdbuf;
+	m_msg.CNT	= strlen(rdbuf);
+
+	send_recv(BOTH, TASK_M, &m_msg);
+	// printl("\n**permission %d, m_msg.src: %d, pathname: %s\n", m_msg.RETVAL, m_msg.source, pathname);
+	if(m_msg.RETVAL == 0){
+		printl("***Successfully set the primkey\n");
+		return 0;
+	}
+}
+
 void Init() {
 	int fd_stdin = open("/dev_tty0", O_RDWR);
 	assert(fd_stdin == 0);
@@ -468,33 +486,39 @@ void Init() {
 	/* extract `cmd.tar' */
 	untar("/cmd.tar");
 
-	// test_cipher();
-	printf("===Create and Encrypt a file===\n");
-	int fd;
-	int n;
-	const char filename[] = "/password";
-	const char bufw[] = "abcde\0";
-	const int rd_bytes = 4;
-	char bufr[rd_bytes];
-	assert(rd_bytes <= strlen(bufw));
-	fd = open(filename, O_CREAT | O_RDWR);
-	assert(fd != -1);
-	n = write(fd, bufw, strlen(bufw));
-	assert(n == strlen(bufw));
-	close(fd);
-	printl("===TestA: file \"%s\", write_enc: %s, len: %d===\n", filename, bufw, n);
-	/* open */
-	fd = open(filename, O_RDWR);
-	// printl("open: %d\n", fd);
-	assert(fd != -1);
-	n = read(fd, bufr, rd_bytes);
-	assert(n == rd_bytes);
-	// printl("rd_bytes: %d %d\n", n, rd_bytes);
-	bufr[n] = 0;
-	// printl("===TestA: file %s, read: %s, %d, %d, %d===\n", filename, bufr, n, tmp, fd);
-	printl("===TestA: file \"%s\", read: %s, len: %d===\n", filename, bufr, n);
-	close(fd);  // 注意，这里如果没有关文件描述符，会从下一个字符开始读取；与buf无关
+	// // test_cipher();
+	// printf("===Create and Encrypt a file===\n");
+	// int fd;
+	// int n;
+	// const char filename[] = "/password";
+	// const char bufw[] = "abcde\0";
+	// const int rd_bytes = 4;
+	// char bufr[rd_bytes];
+	// assert(rd_bytes <= strlen(bufw));
+	// fd = open(filename, O_CREAT | O_RDWR);
+	// assert(fd != -1);
+	// n = write(fd, bufw, strlen(bufw));
+	// assert(n == strlen(bufw));
+	// close(fd);
+	// printl("===TestA: file \"%s\", write_enc: %s, len: %d===\n", filename, bufw, n);
+	// /* open */
+	// fd = open(filename, O_RDWR);
+	// // printl("open: %d\n", fd);
+	// assert(fd != -1);
+	// n = read(fd, bufr, rd_bytes);
+	// assert(n == rd_bytes);
+	// // printl("rd_bytes: %d %d\n", n, rd_bytes);
+	// bufr[n] = 0;
+	// // printl("===TestA: file %s, read: %s, %d, %d, %d===\n", filename, bufr, n, tmp, fd);
+	// printl("===TestA: file \"%s\", read: %s, len: %d===\n", filename, bufr, n);
+	// close(fd);  // 注意，这里如果没有关文件描述符，会从下一个字符开始读取；与buf无关
 
+	char rdbuf[256];
+	char curpath[BYTES_SHELL_WORKING_DIRECTORY];
+	printf("Please set your key for ciphering, within 256 bytes: \n");
+	int r    = read(0, rdbuf, 70);
+	rdbuf[r] = 0;
+	set_cipherkey(rdbuf, r);
 
 	char *tty_list[] = {"/dev_tty1", "/dev_tty2"};
 

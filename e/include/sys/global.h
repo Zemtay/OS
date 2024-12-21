@@ -67,8 +67,6 @@ extern	char *			logdiskbuf;
 extern	const int		LOGDISKBUF_SIZE;
 
 /* MONITOR */
-// 37*64
-EXTERN  int permission_map[NR_TASKS + NR_PROCS][NR_INODE];
 EXTERN	MESSAGE			m_msg;
 extern	u8 *			mbuf;
 extern	u8 *			mbuf2;
