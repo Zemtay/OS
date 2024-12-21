@@ -248,13 +248,6 @@ void set_permission(){
 	assert(m_msg.RETVAL == 0);
 };
 
-void ret_permission(){
-	MESSAGE m_msg;
-	m_msg.type	= RPERMIT_F;
-	send_recv(BOTH, TASK_M, &m_msg);
-	assert(m_msg.RETVAL == 0);
-};
-
 PUBLIC void add_permission(int pid, char *filepath)
 {
 	MESSAGE msg;
@@ -373,7 +366,7 @@ void shabby_shell(const char *tty_name) {
 					}
 					argv[0] = full_path;
 					execv(full_path, argv); // 执行命令
-					ret_permission();
+					// ret_permission(); 在execv中
 				}
 			}
 		}
@@ -415,6 +408,54 @@ if(strcmp(full_path, "/ls\0")){
  * The hen.
  *
  *****************************************************************************/
+void test_cipher()
+{
+	// 文件加密存储
+	printl("===Create and Encrypt a file===\n");
+	int fd;
+	int n;
+	const char filename[] = "password";
+	const char bufw[] = "abcde\0";
+	const int rd_bytes = 4;
+	char bufr[rd_bytes];
+
+	assert(rd_bytes <= strlen(bufw));
+
+	/* create */
+	// printl("File not created. fd: %d\n", fd);
+	fd = open(filename, O_CREAT | O_RDWR);
+	// while(!fd){
+	// 	;
+	// }
+	assert(fd != -1);
+	// printl("===TestA: File created. fd: %d===\n", fd);
+	n = write(fd, bufw, strlen(bufw));
+	assert(n == strlen(bufw));
+	close(fd);
+	printl("===TestA: file \"%s\", write_enc: %s, len: %d===\n", filename, bufw, n);
+	// add_permission("07\0", "password\0");
+	/* open */
+	fd = open(filename, O_RDWR);
+	// printl("open: %d\n", fd);
+	assert(fd != -1);
+	n = read(fd, bufr, rd_bytes);
+	assert(n == rd_bytes);
+	// printl("rd_bytes: %d %d\n", n, rd_bytes);
+	bufr[n] = 0;
+	// printl("===TestA: file %s, read: %s, %d, %d, %d===\n", filename, bufr, n, tmp, fd);
+	printl("===TestA: file \"%s\", read: %s, len: %d===\n", filename, bufr, n);
+	close(fd);  // 注意，这里如果没有关文件描述符，会从下一个字符开始读取；与buf无关
+
+
+	// fd = open(filename, O_RDWR);
+	// n = read_dec(fd, bufr, rd_bytes);
+	// assert(n == rd_bytes);
+	// bufr[n] = 0;
+	// printl("===TestA: file \"%s\", read_dec: %s, len: %d===\n", filename, bufr, n);
+	// close(fd);
+
+}
+
 void Init() {
 	int fd_stdin = open("/dev_tty0", O_RDWR);
 	assert(fd_stdin == 0);
@@ -426,6 +467,34 @@ void Init() {
 
 	/* extract `cmd.tar' */
 	untar("/cmd.tar");
+
+	// test_cipher();
+	printf("===Create and Encrypt a file===\n");
+	int fd;
+	int n;
+	const char filename[] = "/password";
+	const char bufw[] = "abcde\0";
+	const int rd_bytes = 4;
+	char bufr[rd_bytes];
+	assert(rd_bytes <= strlen(bufw));
+	fd = open(filename, O_CREAT | O_RDWR);
+	assert(fd != -1);
+	n = write(fd, bufw, strlen(bufw));
+	assert(n == strlen(bufw));
+	close(fd);
+	printl("===TestA: file \"%s\", write_enc: %s, len: %d===\n", filename, bufw, n);
+	/* open */
+	fd = open(filename, O_RDWR);
+	// printl("open: %d\n", fd);
+	assert(fd != -1);
+	n = read(fd, bufr, rd_bytes);
+	assert(n == rd_bytes);
+	// printl("rd_bytes: %d %d\n", n, rd_bytes);
+	bufr[n] = 0;
+	// printl("===TestA: file %s, read: %s, %d, %d, %d===\n", filename, bufr, n, tmp, fd);
+	printl("===TestA: file \"%s\", read: %s, len: %d===\n", filename, bufr, n);
+	close(fd);  // 注意，这里如果没有关文件描述符，会从下一个字符开始读取；与buf无关
+
 
 	char *tty_list[] = {"/dev_tty1", "/dev_tty2"};
 

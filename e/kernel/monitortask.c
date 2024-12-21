@@ -18,6 +18,7 @@ PRIVATE int clear_permission();
 PRIVATE int permit_instructions();
 PRIVATE int permit_files();
 PRIVATE int rpermit_files();
+PRIVATE int do_cipher();
 
 PUBLIC void task_m1(){
     while(1){
@@ -58,6 +59,9 @@ PUBLIC void task_m() {
             break;
         case CLEAR:
             m_msg.RETVAL = clear_permission();
+            break;
+        case CIPHER:
+            m_msg.RETVAL = do_cipher();
             break;
         default:
             dump_msg("M::unknown message:", &m_msg);
@@ -199,5 +203,20 @@ PRIVATE int rpermit_files(){
         permission_map[src][i] = 0;
     }
     permission_map[src][1] = 0;
+    printl("===>RPERMIT permission, pid is %d\n", src);
     return 0;
 }
+
+PRIVATE int do_cipher(){
+    // char buf[MBUF_SIZE];
+    // buf[0] = 'a'; 这样搞不行 增加了mbuf2
+    // printl("|||now in do_cipher, buf");
+    int bytes = m_msg.CNT;
+    // phys_copy(buf, (void*)va2la(TASK_M, mbuf), bytes);
+    // printl("|||in do_cipher, check buf: %s\n", buf);
+    cipher((void*)va2la(TASK_M, mbuf2), (void*)va2la(TASK_M, mbuf), bytes);
+    // // printl("|||in do_cipher, check buf: %s\n", buf);
+    // phys_copy((void*)va2la(TASK_M, mbuf), (void*)va2la(TASK_M, mbuf2), bytes);
+    return 0;
+}
+

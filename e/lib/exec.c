@@ -57,6 +57,15 @@ PUBLIC int execl(const char *path, const char *arg, ...)
 /*****************************************************************************
  *                                execv
  *****************************************************************************/
+void ret_permission(){
+	printl("re_permit begin\n");
+	MESSAGE m_msg;
+	m_msg.type	= RPERMIT_F;
+	send_recv(BOTH, TASK_M, &m_msg);
+	assert(m_msg.RETVAL == 0);
+	printl("re_permit end\n");
+};
+
 PUBLIC int execv(const char *path, char * argv[])
 {
 	// DEBUG_PRINT("execv", "\nhello\n");
@@ -95,6 +104,8 @@ PUBLIC int execv(const char *path, char * argv[])
 	printx("nop\n");
 	assert(msg.type == SYSCALL_RET);
 
+	// printl("+++1re_permit begin\n"); //不管用
+	// ret_permission();
 	return msg.RETVAL;
 }
 

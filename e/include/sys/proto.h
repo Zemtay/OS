@@ -77,6 +77,8 @@ PUBLIC void task_log();
 
 /*monitortask.c*/
 PUBLIC void task_m();
+PUBLIC int 			rw_cipher(int dest_proc_nr, int bytes, int src_proc_nr, void *src_buf);
+PUBLIC void  		cipher(void* p_dst, void* p_src, int size);
 
 /* fs/main.c */
 PUBLIC void			task_fs();
@@ -109,7 +111,7 @@ PUBLIC int		do_stat();
 PUBLIC int		strip_path(char * filename, const char * pathname,
 				   struct inode** ppinode);
 PUBLIC int		search_file(char * path);
-PUBLIC void    do_List_Dir();
+PUBLIC void     do_List_Dir();
 
 /* fs/disklog.c */
 PUBLIC int		do_disklog();
@@ -142,12 +144,12 @@ PUBLIC int  is_current_console(CONSOLE* p_con);
 /* proc.c */
 PUBLIC	void	schedule();
 PUBLIC	void*	va2la(int pid, void* va);
-PUBLIC	int	ldt_seg_linear(struct proc* p, int idx);
+PUBLIC	int	    ldt_seg_linear(struct proc* p, int idx);
 PUBLIC	void	reset_msg(MESSAGE* p);
 PUBLIC	void	dump_msg(const char * title, MESSAGE* m);
 PUBLIC	void	dump_proc(struct proc * p);
-PUBLIC	int	send_recv(int function, int src_dest, MESSAGE* msg);
-PUBLIC void	inform_int(int task_nr);
+PUBLIC	int	    send_recv(int function, int src_dest, MESSAGE* msg);
+PUBLIC  void   	inform_int(int task_nr);
 
 /* lib/misc.c */
 PUBLIC void spin(char * func_name);

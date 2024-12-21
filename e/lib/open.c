@@ -48,6 +48,7 @@ PUBLIC int open(const char *pathname, int flags)
 		return 0;
 	}
 	// printl("the permission is: %d\n", m_msg.RETVAL);
+	// int pid = m_msg.source;
 
 	MESSAGE msg;
 
@@ -58,11 +59,12 @@ PUBLIC int open(const char *pathname, int flags)
 	msg.NAME_LEN	= strlen(pathname);
 
 	send_recv(BOTH, TASK_FS, &msg);
-	assert(msg.type == SYSCALL_RET);
+	// assert(msg.type == SYSCALL_RET);
 
 	if((flags&O_CREAT) == 1){  //O_CREAT
 		MESSAGE m_msg;
 		m_msg.type	= ADD;
+		m_msg.PROC_NR = getpid();
 		m_msg.PATHNAME	= (void*)pathname;
 		m_msg.FLAGS	= flags;
 		m_msg.NAME_LEN	= strlen(pathname);

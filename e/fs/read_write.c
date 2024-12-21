@@ -38,7 +38,7 @@ PUBLIC int do_rdwt()
 {
 	int fd = fs_msg.FD;	/**< file descriptor. */
 	void * buf = fs_msg.BUF;/**< r/w buffer */
-	int len = fs_msg.CNT;	/**< r/w bytes */
+	int len = fs_msg.CNT;	/**< r/w bytes 要读取的长度*/
 
 	int src = fs_msg.source;		/* caller proc nr. */
 
@@ -54,7 +54,6 @@ PUBLIC int do_rdwt()
 	u32 real_sects_num = 0; // sum of sections
 
 	struct inode * pin = pcaller->filp[fd]->fd_inode;
-
 	assert(pin >= &inode_table[0] && pin < &inode_table[NR_INODE]);
 
 	int imode = pin->i_mode & I_TYPE_MASK;
@@ -127,6 +126,9 @@ PUBLIC int do_rdwt()
 		u64 before_sector_num = traveled_sector;
 		// printl("end sec=%d, befsec=%d\n",end_sector,before_sector_num);
 		struct inode* start_inode = traverse_node;
+		int inode = (int)(start_inode - inode_table);
+		int inode2 = start_inode->i_num;
+		// printl("===start inode %d\n", inode);
 		while (1) {
 			if (traveled_sector + traverse_node->i_nr_sects >= end_sector) {
 				break;
@@ -169,14 +171,25 @@ PUBLIC int do_rdwt()
 			for (i = rw_sect_min; i <= rw_sect_max; i += chunk) {
 				/* read/write this amount of bytes every time */
 				int bytes = min(bytes_left, chunk * SECTOR_SIZE - off);
-				rw_sector(DEV_READ,
-					pin->i_dev,
-					i * SECTOR_SIZE,
-					chunk * SECTOR_SIZE,
-					TASK_FS,
-					fsbuf);
-				
+				// 判断是否为新生成的文件
+				// printl("===start inode %d, %d\n", inode, inode2);
+				// if(inode2 > SYS_FILE+PROG_FILE){
+				// 	// printl("|||===start inode %d\n", inode);
+				// 	rw_cipher(TASK_M, bytes, TASK_FS, fsbuf);
+				// 	printl("in do_rdwt, %s\n", fsbuf);
+				// }
 				if (fs_msg.type == READ) {
+					rw_sector(DEV_READ,
+						pin->i_dev,
+						i * SECTOR_SIZE,
+						chunk * SECTOR_SIZE,
+						TASK_FS,
+						fsbuf);
+					if(inode2 > SYS_FILE+PROG_FILE){
+						// printl("|||===start inode %d\n", inode);
+						rw_cipher(TASK_M, bytes, TASK_FS, fsbuf);
+						printl("in do_rdwt, read, %s\n", fsbuf);
+					}
 					phys_copy((void*)va2la(src, buf + bytes_rw),
 						(void*)va2la(TASK_FS, fsbuf + off),
 						bytes);
@@ -185,6 +198,11 @@ PUBLIC int do_rdwt()
 					phys_copy((void*)va2la(TASK_FS, fsbuf + off),
 						(void*)va2la(src, buf + bytes_rw),
 						bytes);
+					if(inode2 > SYS_FILE+PROG_FILE){
+						// printl("|||===start inode %d\n", inode);
+						rw_cipher(TASK_M, bytes, TASK_FS, fsbuf);
+						printl("in do_rdwt, write, %s\n", fsbuf);
+					}
 					rw_sector(DEV_WRITE,
 						pin->i_dev,
 						i * SECTOR_SIZE,

@@ -45,7 +45,7 @@ extern  CONSOLE		console_table[];
 EXTERN	MESSAGE			mm_msg;
 extern	u8 *			mmbuf;
 extern	const int		MMBUF_SIZE;
-EXTERN	int			memory_size;
+EXTERN	int			    memory_size;
 /* For shell use */
 EXTERN char Working_Directory[BYTES_SHELL_WORKING_DIRECTORY];
 
@@ -70,3 +70,6 @@ extern	const int		LOGDISKBUF_SIZE;
 // 37*64
 EXTERN  int permission_map[NR_TASKS + NR_PROCS][NR_INODE];
 EXTERN	MESSAGE			m_msg;
+extern	u8 *			mbuf;
+extern	u8 *			mbuf2;
+extern	const int		MBUF_SIZE;

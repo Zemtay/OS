@@ -99,3 +99,9 @@ PUBLIC	const int	LOGBUF_SIZE	= 0x100000;
 PUBLIC	char *		logdiskbuf	= (char*)0x900000;
 PUBLIC	const int	LOGDISKBUF_SIZE	= 0x100000;
 
+/**
+ * 10MB~11MB: buffer for M (cipher)
+ */
+PUBLIC	u8 *		mbuf		= (u8*)0x1000000;
+PUBLIC	u8 *		mbuf2		= (u8*)0x1000000;
+PUBLIC	const int	MBUF_SIZE	= 0x200000;

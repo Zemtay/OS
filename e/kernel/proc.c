@@ -145,7 +145,7 @@ PUBLIC void* va2la(int pid, void* va)
 	if (pid < NR_TASKS + NR_NATIVE_PROCS) {
 		assert(la == (u32)va);
 	}
-
+	// printl("|||the pid is %d, ls is %x\n", pid, la); //不能有这一行，否则一开始就报错
 	return (void*)la;
 }
 

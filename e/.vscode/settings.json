@@ -17,6 +17,10 @@
         "string.h": "c",
         "keywise.h": "c",
         "logfila.h": "c",
-        "logfilament.h": "c"
+        "logfilament.h": "c",
+        "stdlib.h": "c",
+        "endian.h":"c",
+        "ZUC.h":"c",
+        "mem.h":"c"
     }
 }

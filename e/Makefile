@@ -44,7 +44,7 @@ LOBJS		=  lib/syscall.o\
 			lib/open.o lib/read.o lib/write.o lib/close.o lib/unlink.o lib/lseek.o\
 			lib/getpid.o lib/stat.o lib/getpinfo.o\
 			lib/fork.o lib/exit.o lib/wait.o lib/exec.o lib/kill.o lib/logfila.o\
-			lib/shell.o lib/dirent.o lib/cmdparser.o lib/keywise.o lib/logfilament.o
+			lib/shell.o lib/dirent.o lib/cmdparser.o lib/keywise.o lib/logfilament.o lib/cipher.o
 DASMOUTPUT	= kernel.bin.asm
 
 # All Phony Targets
@@ -58,8 +58,8 @@ everything : $(ORANGESBOOT) $(ORANGESKERNEL)
 
 all : realclean everything
 
-image : realclean everything clean buildimg
-#image : everything buildimg
+# image : realclean everything clean buildimg
+image : everything buildimg
 
 clean :
 	rm -f $(OBJS) $(LOBJS)
@@ -245,4 +245,7 @@ lib/keywise.o: lib/keywise.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 lib/logfilament.o: lib/logfilament.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/cipher.o: lib/cipher.c
 	$(CC) $(CFLAGS) -o $@ $<

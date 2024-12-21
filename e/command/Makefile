@@ -23,7 +23,7 @@ everything : $(BIN)
 
 install : all clean
 	cp ../kernel.bin ./ -v
-	tar vcf inst.tar kernel.bin $(BIN) # $(TXTS)
+	tar vcf inst.tar kernel.bin $(BIN) # $(TXTS) 注释掉了
 	dd if=inst.tar of=$(HD) seek=`echo "obase=10;ibase=16;(\`egrep -e '^ROOT_BASE' ../boot/include/load.inc | sed -e 's/.*0x//g'\`+\`egrep -e '#define[[:space:]]*INSTALL_START_SECT' ../include/sys/config.h | sed -e 's/.*0x//g'\`)*200" | bc` bs=1 count=`ls -l inst.tar | awk -F " " '{print $$5}'` conv=notrunc
 
 all : realclean everything
