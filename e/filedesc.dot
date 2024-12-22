@@ -1,0 +1,326 @@
+         
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 16
+
+[INFO] [FS-open]: start to search /ps, fd:2
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 16
+
+[INFO] [FS-open]: start to search /ps, fd:0
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 12
+
+[INFO] [FS-open]: start to search /touch, fd:2
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 12
+
+[INFO] [FS-open]: start to search /touch, fd:0
+[INFO] [M-ADD]: grant permission for pid 13, pathname /new
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 18
+
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 18
+
+[INFO] [FS-open]: start to search /dmesg, fd:0
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 18
+
+[INFO] [FS-open]: start to search /dmesg, fd:2
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 18
+
+[INFO] [FS-open]: start to search /dmesg, fd:0
+[TRACE] [FS-lowsearch]: devsearch /dmesg, fd:0
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 12
+
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: devch
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 12
+
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: kernel.bi[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: rm
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: dmesg
+[TRACE] [FS-lowsearch]: new
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: rm
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: dmesg
+[TRACE] [FS-lowsearch]: new
+[INFO] [M-ADD]: grant permission for pid 13, pathname /new
+[TRACE] [FS-lowsearch]: devssion for pid 13, pathname /new
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 12
+
+[INFO] [FS-open]: start to search /touch, fd:2
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: kernel.bi[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: devch
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: mkdi[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 12
+
+[INFO] [FS-open]: start to search /touch, fd:0
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: .
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: dmesg
+[TRACE] [FS-lowsearch]: new
+[TRACE] [FS-lowsearch]: 
+[TRACE] [FS-lowsearch]: dev
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: rm
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: new
+[TRACE] [FS-lowsearch]: new
+[TRACE] [FS-lowsearch]: new2
+[INFO] [M-ADD]: grant permission for pid 13, pathname /new2
+[TRACE] [FS-lowsearch]: devssion for pid 13, pathname /new2
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: cat
+h
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: dmesg
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 18
+
+[INFO] [FS-open]: start to search /dmesg, fd:2
+[TRACE] [FS-lowsearch]: devsearch /dmesg, fd:2
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: [TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: dmesg
+[TRACE] [FS-lowsearch]: devsg
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: rm
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: dmesg
+[TRACE] [FS-lowsearch]: devsg
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty1
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: cmd.tar
+[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: toucr
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: dmesg
+[TRACE] [FS-lowsearch]: dmesg
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 18
+
+[INFO] [FS-open]: start to search /dmesg, fd:0
+[TRACE] [FS-lowsearch]: devsearch /dmesg, fd:0
+[TRACE] [FS-lowsearch]: dev_tty0
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: dev_tty2
+[TRACE] [FS-lowsearch]: kernel.bi[TRACE] [FS-lowsearch]: kernel.bin
+[TRACE] [FS-lowsearch]: echo
+[TRACE] [FS-lowsearch]: pwd
+[TRACE] [FS-lowsearch]: ls
+[TRACE] [FS-lowsearch]: mkdir
+[TRACE] [FS-lowsearch]: cd
+[TRACE] [FS-lowsearch]: touch
+[TRACE] [FS-lowsearch]: rm
+[TRACE] [FS-lowsearch]: vi
+[TRACE] [FS-lowsearch]: cat
+[TRACE] [FS-lowsearch]: ps
+[TRACE] [FS-lowsearch]: kill
+[TRACE] [FS-lowsearch]: dmesg
+[ERROR] [M-CHECK]: check permission for process , filepath INIT_11, pid 265252, inode 11 is 12
+
+[ERROR] [M-CHECK]: check permission for process , filepath MM, pid 265252, inode 4 is 12
+
+[INFO] [FS-open]: start to search /touch, fd:0
+[INFO] [M-ADD]: grant permission for pid 13, pathname /new3
+

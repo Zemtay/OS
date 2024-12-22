@@ -10,6 +10,7 @@
 #include "global.h"
 #include "keyboard.h"
 #include "proto.h"
+#include "logfila.h"
 
 PRIVATE void init_permission();
 PRIVATE int check_permission();
@@ -105,6 +106,7 @@ void init_permission(){
 	// 		permission_map[i][j] = 1;
 	// 	}
 	// }
+    LogFuncEntry("M-INITP", LEVEL_INFO, "finish initial permission");
 }
 
 PRIVATE int check_permission(){
@@ -138,6 +140,14 @@ PRIVATE int check_permission(){
     int inode = search_file(pathname); //不能使用m_msg.PATHNAME
     pcaller     = &proc_table[src];
     printl("====>option %d, process is %s, filepath %s, pid is %d, inode is %d, permission %d\n", m_msg.FLAGS, pcaller->name, pathname, src, inode, permission_map[src][inode]);
+    int info;
+    if(permission_map[src][inode]){
+        info = LEVEL_INFO;
+    }
+    else{
+        info = LEVEL_ERROR;
+    }
+    LogFuncEntry("M-CHECK", info, "check permission for process %s, filepath %s, pid %d, inode %d is %d\n", pcaller->name, pathname, src, inode, permission_map[src][inode]);
     return permission_map[src][inode];
     // return 1;
 }
@@ -159,6 +169,7 @@ PRIVATE int add_permission(){
     permission_map[pid][inode] = 1;
 
     printl("===>ADD permission, filepath %s, pid is %d, inode is %d, permission %d.\n", pathname, pid, inode, permission_map[pid][inode]);
+    LogFuncEntry("M-ADD", LEVEL_INFO, "grant permission for pid %d, pathname %s", pid, pathname);
     return 0;
 }
 
@@ -181,6 +192,7 @@ PRIVATE int clear_permission(){
 
     pcaller     = &proc_table[src];
     printl("===>CLEAR permission, filepath %s, pid is %d, inode is %d, permission %d.\n", pathname, pid, inode, permission_map[pid][inode]);
+    LogFuncEntry("M-CLEAR", LEVEL_INFO, "clear permission for pid %d, pathname %s", pid, pathname);
     return 0;
 }
 
@@ -208,6 +220,7 @@ PRIVATE int rpermit_files(){
     }
     permission_map[src][1] = 0;
     printl("===>RPERMIT permission, pid is %d\n", src);
+    LogFuncEntry("M-RPERMIT", LEVEL_INFO, "retrieve from %d", src);
     return 0;
 }
 
@@ -255,9 +268,9 @@ void rc4_crypt(unsigned char*s, unsigned char*Data, unsigned long Len)
         s[j] = tmp;
         t = (s[i] + s[j]) % 256;
         Data[k] ^= s[t];
-        printl("%x ",s[t]);
+        // printl("%x ",s[t]);
     }
-    printl("*****\n");
+    // printl("*****\n");
 }
  
 PUBLIC void  cipher(void* p_dst, void* pData, int size)
@@ -273,6 +286,7 @@ PUBLIC void  cipher(void* p_dst, void* pData, int size)
 PRIVATE int do_setkey(){
     memset(key, 0, 256);
     printl("|||ready to set key: %s\n", key);
+    LogFuncEntry("M-SETKEY", LEVEL_INFO, "set key %s", key);
     phys_copy(key, m_msg.BUF, m_msg.CNT);
     rc4_init(s, (unsigned char*)key, strlen(key));//已经完成了初始化
     for (int i = 0; i<256; i++)//用s2[i]暂时保留经过初始化的s[i]，很重要的！！！

@@ -249,7 +249,7 @@ PUBLIC int disklog(char * logstr)
 
 #define LOG_PROCS				0 /* YES */
 
-#define LOG_FD_TABLE			0
+#define LOG_FD_TABLE			1
 #define LOG_INODE_TABLE			0
 #define LOG_SMAP				0
 #define LOG_IMAP				0

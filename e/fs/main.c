@@ -22,7 +22,7 @@
 #include "console.h"
 #include "global.h"
 #include "proto.h"
-
+#include "logfila.h"
 #include "hd.h"
 
 // clang-format on
@@ -397,7 +397,7 @@ PUBLIC int rw_sector(int io_type, int dev, u64 pos, int bytes, int proc_nr, void
 
 PUBLIC int rw_cipher(int dest_proc_nr, int bytes, int src_proc_nr, void *src_buf) {
 	phys_copy((void*)va2la(TASK_M, mbuf), (void*)va2la(src_proc_nr, src_buf), bytes);
-	printl("||| before: %s\n", src_buf);
+	// printl("||| before: %s\n", src_buf);
 	MESSAGE m_msg;
 	m_msg.type	= CIPHER;
 	m_msg.CNT	= bytes;
@@ -405,7 +405,7 @@ PUBLIC int rw_cipher(int dest_proc_nr, int bytes, int src_proc_nr, void *src_buf
 	// printl("the permission is: %d\n", m_msg.RETVAL);
 	assert(m_msg.RETVAL == 0);
 	phys_copy((void*)va2la(src_proc_nr, src_buf), (void*)va2la(TASK_M, mbuf), bytes);
-	printl("||| after: %s\n", src_buf);
+	// printl("||| after: %s\n", src_buf);
 	return 0;
 }
 
