@@ -4,7 +4,7 @@
 HD		= ../80m.img
 
 ASM		= nasm
-DASM		= objdump
+DASM	= objdump
 CC		= gcc
 LD		= ld
 ASMFLAGS	= -I ../include/ -f elf
@@ -12,7 +12,7 @@ CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall
 LDFLAGS		= -Ttext 0x1000
 DASMFLAGS	= -D
 LIB		= ../lib/orangescrt.a
-BIN		= echo pwd ls mkdir cd touch rm vi cat ps kill dmesg
+BIN		= echo pwd ls mkdir cd touch rm vi cat ps kill dmesg overflow overflow2 shellcode
 TXTS	= maa.txt mbb.txt mcc.txt mdd.txt
 
 # All Phony Targets
@@ -144,4 +144,22 @@ kill.o: kill.c ../include/type.h ../include/stdio.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 kill : kill.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+
+overflow.o: overflow.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+overflow : overflow.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+
+overflow2.o: overflow2.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+overflow2 : overflow2.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+
+shellcode.o: shellcode.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+shellcode : shellcode.o start.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $?

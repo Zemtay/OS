@@ -22,6 +22,7 @@ PRIVATE void unblock(struct proc* p);
 PRIVATE int  msg_send(struct proc* current, int dest, MESSAGE* m);
 PRIVATE int  msg_receive(struct proc* current, int src, MESSAGE* m);
 PRIVATE int  deadlock(int src, int dest);
+PUBLIC void sys_check_stack();
 
 /*****************************************************************************
  *                                schedule
@@ -591,3 +592,69 @@ PUBLIC void dump_msg(const char * title, MESSAGE* m)
 		);
 }
 
+void get_num(unsigned int num, char changes[9]){
+	int tmp = 0;
+	for(int i = 0; i < 8; i ++){
+		tmp = num % 16;
+		num = num / 16;
+		if(tmp < 10){
+			changes[7 - i] = tmp + '0';
+		}
+		else{
+			changes[7 - i] = tmp - 10 + 'A';
+		}
+	}
+	changes[8] = 0;
+}
+
+PUBLIC void sys_check_stack(){
+	struct proc * p = p_proc_ready;
+	if(p-&FIRST_PROC < NR_TASKS + NR_NATIVE_PROCS){
+		if(p->regs.eip>(u32)task_stack){
+			printl("init eip in the stack!\n");
+		}
+		// printx(p->name);
+		// printx(" init\n");
+		return;
+	}
+	// printx(p->name);
+	// printx(" after\n");
+	char num[9];
+	if(p->regs.eip>PROC_IMAGE_SIZE_DEFAULT - STACK_SIZE_DEFAULT){
+		// printl("%s: eip in the stack!\n", p->name);
+		// printl("%x %x", p->regs.eip, p->regs.ebp);
+		printx(p->name);
+		// printx(p->regs.eip);
+		// printx(p->regs.ebp);
+		printx(": eip in the stack!\n");
+	}
+	else{
+		printx(p->name);
+		printx(": fine\n");
+	}
+	// sprintf("%x %x", PROC_IMAGE_SIZE_DEFAULT - PROC_ORIGIN_STACK, p->regs.eip); 打印不出来
+	// printl("%d", (PROC_IMAGE_SIZE_DEFAULT - PROC_ORIGIN_STACK));
+	if(strcmp(p->name, "/overflow") == 0){  //注意，多了/
+		int offset_canary = p->regs.ebp - 0x14;
+		int ss = p->regs.ss;
+		int base = reassembly(
+			p->ldts[ss>>3].base_high, 24,
+			p->ldts[ss>>3].base_mid, 16,
+			p->ldts[ss>>3].base_low
+		);
+		unsigned int canary = *(unsigned int *)(offset_canary + base);
+		printx(p->name);
+		printx(": get ");
+		get_num(canary, num);
+		printx(num);
+		printx(", ebp: ");
+		get_num(p->regs.ebp, num);
+		printx(num);
+		printx(", addr: ");
+		get_num(offset_canary + base, num);
+		printx(num);
+		if(canary != 0xffffffff){
+			printx(", canary check failed. expect 0xFFFFFFFF\n");
+		}
+	}
+}

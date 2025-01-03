@@ -42,19 +42,15 @@ PUBLIC void task_m() {
         switch(type){
         case PERMIT_P:
             m_msg.RETVAL = permit_instructions();
-            // printl("the permission: %d\n", m_msg.RETVAL);
             break;
         case PERMIT_F:
             m_msg.RETVAL = permit_files();
-            // printl("the permission: %d\n", m_msg.RETVAL);
             break;
         case RPERMIT_F:
             m_msg.RETVAL = rpermit_files();
-            // printl("the permission: %d\n", m_msg.RETVAL);
             break;
         case CHECK:
             m_msg.RETVAL = check_permission();
-            // printl("the permission: %d\n", m_msg.RETVAL);
             break;
         case ADD:
             m_msg.RETVAL = add_permission();
@@ -285,9 +281,8 @@ PUBLIC void  cipher(void* p_dst, void* pData, int size)
 
 PRIVATE int do_setkey(){
     memset(key, 0, 256);
-    printl("|||ready to set key: %s\n", key);
-    LogFuncEntry("M-SETKEY", LEVEL_INFO, "set key %s", key);
     phys_copy(key, m_msg.BUF, m_msg.CNT);
+    printl("|||ready to set key: %s\n", key);
     rc4_init(s, (unsigned char*)key, strlen(key));//已经完成了初始化
     for (int i = 0; i<256; i++)//用s2[i]暂时保留经过初始化的s[i]，很重要的！！！
     {

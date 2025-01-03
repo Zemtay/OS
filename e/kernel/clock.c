@@ -39,6 +39,8 @@ PUBLIC void clock_handler(int irq)
 
 	if (key_pressed)
 		inform_int(TASK_TTY);
+	
+	check_stack();
 
 	if (k_reenter != 0) {
 		return;

@@ -514,9 +514,10 @@ void Init() {
 	// close(fd);  // 注意，这里如果没有关文件描述符，会从下一个字符开始读取；与buf无关
 
 	char rdbuf[256];
-	char curpath[BYTES_SHELL_WORKING_DIRECTORY];
+	// char curpath[BYTES_SHELL_WORKING_DIRECTORY];
 	printf("Please set your key for ciphering, within 256 bytes: \n");
-	int r    = read(0, rdbuf, 70);
+	int r    = read(0, rdbuf, 256);  // 原来是70
+	assert(r <= 256);
 	rdbuf[r] = 0;
 	set_cipherkey(rdbuf, r);
 

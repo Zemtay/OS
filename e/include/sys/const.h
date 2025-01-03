@@ -147,7 +147,7 @@
 #define	MAX_TICKS	0x7FFFABCD
 
 /* system call */
-#define NR_SYS_CALL	3
+#define NR_SYS_CALL	4
 
 /* ipc */
 #define SEND		1
@@ -302,7 +302,7 @@ enum TTYSCRCTL {
 #define	NR_SUPER_BLOCK	8
 
 #define SYS_FILE	6
-#define PROG_FILE	12
+#define PROG_FILE	15
 
 /* INODE::i_mode (octal, lower 12 bits reserved) */
 #define I_TYPE_MASK     0170000

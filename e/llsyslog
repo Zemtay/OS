@@ -1,74 +1,25 @@
-    3203
+     779
                       
-<2024-12-21 23:07:22>
+<2024-12-23 08:14:08>
          
 [INFO] [M-CHECK]: check permission for process INIT_11, filepath /ls, pid 11, inode 9 is 1
 
 [INFO] [FS-open]: start to search /ls, fd:2
 [INFO] [M-CHECK]: check permission for process MM, filepath /ls, pid 4, inode 9 is 1
 
-[INFO] [FS-open]: start to search /ls, fd:0
 [ERROR] [M-CHECK]: check permission for process /ls, filepath /, pid 13, inode 1 is 0
 
 [INFO] [M-ADD]: grant permission for pid 13, pathname /
 [INFO] [M-CHECK]: check permission for process INIT_11, filepath /ls, pid 11, inode 9 is 1
 
-[INFO] [FS-open]: start to search /ls, fd:2
 [INFO] [M-CHECK]: check permission for process MM, filepath /ls, pid 4, inode 9 is 1
 
 [INFO] [FS-open]: start to search /ls, fd:0
 [INFO] [M-CHECK]: check permission for process /ls, filepath /, pid 13, inode 1 is 1
 
 [INFO] [FS-open]: start to search /, fd:2
-[INFO] [M-CLEAR]: clear permission for pid 13, pathname /
-[INFO] [M-CHECK]: check permission for process INIT_11, filepath /ls, pid 11, inode 9 is 1
 
-[INFO] [M-CHECK]: check permission for process MM, filepath /ls, pid 4, inode 9 is 1
 
-[INFO] [FS-open]: start to search /ls, fd:0
-[ERROR] [M-CHECK]: check permission for process /ls, filepath /, pid 13, inode 1 is 0
 
-[INFO] [M-CHECK]: check permission for process INIT_11, filepath /mkdir, pid 11, inode 10 is 1
 
-[INFO] [M-CHECK]: check permission for process MM, filepath /mkdir, pid 4, inode 10 is 1
-
-[INFO] [FS-open]: start to search /mkdir, fd:0
-[INFO] [M-CHECK]: check permission for process INIT_11, filepath /cd, pid 11, inode 11 is 1
-
-[INFO] [FS-open]: start to search /cd, fd:2
-[INFO] [M-CHECK]: check permission for process MM, filepath /cd, pid 4, inode 11 is 1
-
-[INFO] [FS-open]: start to search /cd, fd:0
-[INFO] [M-CHECK]: check permission for process INIT_11, filepath /touch, pid 11, inode 12 is 1
-
-[INFO] [FS-open]: start to search /touch, fd:2
-[INFO] [M-CHECK]: check permission for process MM, filepath /touch, pid 4, inode 12 is 1
-
-[INFO] [FS-open]: start to search /touch, fd:0
-[INFO] [M-ADD]: grant permission for pid 13, pathname /new/file
-[INFO] [M-CHECK]: check permission for process INIT_11, filepath /ls, pid 11, inode 9 is 1
-
-[INFO] [FS-open]: start to search /ls, fd:2
-[INFO] [M-CHECK]: check permission for process MM, filepath /ls, pid 4, inode 9 is 1
-
-[INFO] [FS-open]: start to search /ls, fd:0
-[ERROR] [M-CHECK]: check permission for process /ls, filepath /new, pid 13, inode 19 is 0
-
-[INFO] [M-ADD]: grant permission for pid 13, pathname /new
-[INFO] [M-CHECK]: check permission for process INIT_11, filepath /ls, pid 11, inode 9 is 1
-
-[INFO] [FS-open]: start to search /ls, fd:2
-[INFO] [M-CHECK]: check permission for process MM, filepath /ls, pid 4, inode 9 is 1
-
-[INFO] [M-CHECK]: check permission for process /ls, filepath /new, pid 13, inode 19 is 1
-
-[INFO] [M-CHECK]: check permission for process INIT_11, filepath /vi, pid 11, inode 14 is 1
-
-[INFO] [FS-open]: start to search /vi, fd:2
-[INFO] [M-CHECK]: check permission for process MM, filepath /vi, pid 4, inode 14 is 1
-
-[INFO] [FS-open]: start to search /vi, fd:0
-[INFO] [M-CHECK]: check permission for process /vi, filepath /new/file, pid 13, inode 20 is 1
-
-[INFO] [TTY-sc]: method=1, arg=0
 
